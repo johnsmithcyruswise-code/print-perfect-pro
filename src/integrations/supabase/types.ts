@@ -38,6 +38,47 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          message: string | null
+          order_id: string | null
+          read_at: string | null
+          subject: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          order_id?: string | null
+          read_at?: string | null
+          subject: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          order_id?: string | null
+          read_at?: string | null
+          subject?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       order_events: {
         Row: {
           created_at: string
@@ -115,12 +156,14 @@ export type Database = {
         Row: {
           addons: string[]
           address: string | null
+          assigned_printer_id: string | null
           binding: string
           color_mode: string
           coupon_code: string | null
           created_at: string
           custom_height_mm: number | null
           custom_width_mm: number | null
+          customer_notes: string | null
           delivery_method: string
           discount: number
           id: string
@@ -129,8 +172,11 @@ export type Database = {
           paid: boolean
           paper_size: string
           paper_type: string
+          pickup_deadline: string | null
           quantity: number
           sides: string
+          staff_notes: string | null
+          staff_price: number | null
           status: Database["public"]["Enums"]["order_status"]
           subtotal: number
           total: number
@@ -142,12 +188,14 @@ export type Database = {
         Insert: {
           addons?: string[]
           address?: string | null
+          assigned_printer_id?: string | null
           binding?: string
           color_mode: string
           coupon_code?: string | null
           created_at?: string
           custom_height_mm?: number | null
           custom_width_mm?: number | null
+          customer_notes?: string | null
           delivery_method?: string
           discount?: number
           id?: string
@@ -156,8 +204,11 @@ export type Database = {
           paid?: boolean
           paper_size: string
           paper_type: string
+          pickup_deadline?: string | null
           quantity?: number
           sides: string
+          staff_notes?: string | null
+          staff_price?: number | null
           status?: Database["public"]["Enums"]["order_status"]
           subtotal?: number
           total?: number
@@ -169,12 +220,14 @@ export type Database = {
         Update: {
           addons?: string[]
           address?: string | null
+          assigned_printer_id?: string | null
           binding?: string
           color_mode?: string
           coupon_code?: string | null
           created_at?: string
           custom_height_mm?: number | null
           custom_width_mm?: number | null
+          customer_notes?: string | null
           delivery_method?: string
           discount?: number
           id?: string
@@ -183,8 +236,11 @@ export type Database = {
           paid?: boolean
           paper_size?: string
           paper_type?: string
+          pickup_deadline?: string | null
           quantity?: number
           sides?: string
+          staff_notes?: string | null
+          staff_price?: number | null
           status?: Database["public"]["Enums"]["order_status"]
           subtotal?: number
           total?: number
@@ -192,6 +248,98 @@ export type Database = {
           unit_price?: number
           updated_at?: string
           user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_assigned_printer_id_fkey"
+            columns: ["assigned_printer_id"]
+            isOneToOne: false
+            referencedRelation: "printers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      print_logs: {
+        Row: {
+          ezeep_job_id: string | null
+          id: string
+          operator_id: string
+          order_id: string
+          pages_printed: number
+          printed_at: string
+          printer_id: string | null
+        }
+        Insert: {
+          ezeep_job_id?: string | null
+          id?: string
+          operator_id: string
+          order_id: string
+          pages_printed?: number
+          printed_at?: string
+          printer_id?: string | null
+        }
+        Update: {
+          ezeep_job_id?: string | null
+          id?: string
+          operator_id?: string
+          order_id?: string
+          pages_printed?: number
+          printed_at?: string
+          printer_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "print_logs_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "print_logs_printer_id_fkey"
+            columns: ["printer_id"]
+            isOneToOne: false
+            referencedRelation: "printers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      printers: {
+        Row: {
+          created_at: string
+          ezeep_device_id: string | null
+          id: string
+          ip_address: string | null
+          is_default: boolean
+          location: string | null
+          model: string | null
+          name: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          ezeep_device_id?: string | null
+          id?: string
+          ip_address?: string | null
+          is_default?: boolean
+          location?: string | null
+          model?: string | null
+          name: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          ezeep_device_id?: string | null
+          id?: string
+          ip_address?: string | null
+          is_default?: boolean
+          location?: string | null
+          model?: string | null
+          name?: string
+          status?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -216,6 +364,39 @@ export type Database = {
           full_name?: string | null
           id?: string
           phone?: string | null
+        }
+        Relationships: []
+      }
+      recent_files: {
+        Row: {
+          created_at: string
+          file_name: string
+          file_path: string
+          file_size: number
+          file_type: string | null
+          id: string
+          last_accessed: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          file_name: string
+          file_path: string
+          file_size?: number
+          file_type?: string | null
+          id?: string
+          last_accessed?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          file_name?: string
+          file_path?: string
+          file_size?: number
+          file_type?: string | null
+          id?: string
+          last_accessed?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -261,6 +442,7 @@ export type Database = {
         | "ready"
         | "shipped"
         | "cancelled"
+        | "completed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -397,6 +579,7 @@ export const Constants = {
         "ready",
         "shipped",
         "cancelled",
+        "completed",
       ],
     },
   },
