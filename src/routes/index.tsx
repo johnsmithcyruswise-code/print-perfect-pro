@@ -1,12 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Zap, Leaf, ShieldCheck, Truck, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  UploadCloud,
+  Leaf,
+  ShieldCheck,
+  Store,
+  Sparkles,
+  MapPin,
+  Clock,
+  Phone,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { SiteHeader } from "@/components/site-header";
-import { DEFAULT_SPECS, PAPER_SIZES, PAPER_TYPES, money, quote } from "@/lib/pricing";
+import { STORE } from "@/lib/pricing";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
@@ -16,12 +23,12 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Upload artwork, configure paper and finishing, and get an instant quote. Same-day printing, live job tracking and pickup or delivery.",
+          "Upload artwork, choose paper and finishing, and collect in store. Same-day printing and live job tracking in Nairobi.",
       },
       { property: "og:title", content: "Bazz Computer Services — Print Shop, Reinvented" },
       {
         property: "og:description",
-        content: "Instant print quotes, same-day production and live order tracking.",
+        content: "Same-day printing, live order tracking and pay-on-pickup convenience.",
       },
     ],
   }),
@@ -29,15 +36,6 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const [size, setSize] = useState("A4");
-  const [type, setType] = useState("matte");
-  const [qty, setQty] = useState(100);
-
-  const estimate = useMemo(
-    () => quote({ ...DEFAULT_SPECS, paperSize: size, paperType: type, quantity: qty }),
-    [size, type, qty],
-  );
-
   return (
     <div className="min-h-screen">
       <SiteHeader />
@@ -58,7 +56,8 @@ function Index() {
               </h1>
               <p className="text-muted-foreground mt-6 max-w-lg text-lg">
                 Bazz Computer Services turns files into finished work. Upload artwork, tune every
-                spec, watch the price update live, and track your job from prepress to pickup.
+                spec and track your job from prepress to pickup. No online payment — our team
+                confirms your quote and you settle in store.
               </p>
               <div className="mt-9 flex flex-wrap gap-3">
                 <Button variant="hero" size="xl" asChild>
@@ -93,32 +92,34 @@ function Index() {
               <PrinterScene />
 
               <div className="glass-card mt-8 rounded-3xl p-6">
-                <h2 className="text-sm font-bold tracking-wide uppercase">Instant estimate</h2>
-                <div className="mt-4 space-y-4">
-                  <Picker
-                    label="Size"
-                    options={PAPER_SIZES.filter((o) => o.value !== "custom")}
-                    value={size}
-                    onSelect={setSize}
-                  />
-                  <Picker label="Paper" options={PAPER_TYPES} value={type} onSelect={setType} />
-                  <div className="space-y-2">
-                    <Label htmlFor="qty">Quantity</Label>
-                    <Input
-                      id="qty"
-                      type="number"
-                      min={1}
-                      value={qty}
-                      className="max-w-36 font-mono"
-                      onChange={(e) => setQty(Math.max(1, Number(e.target.value) || 1))}
-                    />
-                  </div>
-                </div>
-                <div className="border-border mt-6 flex items-end justify-between border-t pt-5">
-                  <span className="text-muted-foreground text-xs">Estimated total</span>
-                  <span className="text-gradient-brand font-mono text-3xl font-extrabold">
-                    {money(estimate.total)}
-                  </span>
+                <h2 className="text-sm font-bold tracking-wide uppercase">How it works</h2>
+                <ol className="mt-5 space-y-4">
+                  {[
+                    ["Upload your files", "PDF, images, Office docs or ZIP — up to 50MB each."],
+                    ["Choose your specs", "Paper, size, colour, binding and turnaround."],
+                    ["Collect &amp; pay in store", "We confirm the quote and print — you pay at pickup."],
+                  ].map(([title, body], i) => (
+                    <li key={title} className="flex gap-3">
+                      <span className="gradient-brand text-primary-foreground flex size-7 shrink-0 items-center justify-center rounded-full font-mono text-xs font-bold">
+                        {i + 1}
+                      </span>
+                      <div>
+                        <p className="text-sm font-semibold">{title}</p>
+                        <p className="text-muted-foreground text-xs">{body}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+                <div className="border-border text-muted-foreground mt-6 space-y-1.5 border-t pt-5 text-xs">
+                  <p className="flex items-center gap-2">
+                    <MapPin className="text-primary size-3.5" /> {STORE.address}
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <Clock className="text-primary size-3.5" /> {STORE.hours}
+                  </p>
+                  <p className="flex items-center gap-2">
+                    <Phone className="text-primary size-3.5" /> {STORE.phone}
+                  </p>
                 </div>
               </div>
             </motion.div>
@@ -128,10 +129,10 @@ function Index() {
         <section className="mx-auto max-w-6xl px-4 pb-24">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { icon: Zap, title: "Live pricing", body: "Every spec change repriced instantly — no quote emails." },
+              { icon: UploadCloud, title: "Upload anything", body: "PDFs, images, Office files and archives up to 50MB each." },
               { icon: Leaf, title: "Eco scoring", body: "See the footprint of each paper stock before you commit." },
               { icon: ShieldCheck, title: "Private files", body: "Artwork is encrypted and only visible to you and our press team." },
-              { icon: Truck, title: "Pickup or ship", body: "Collect in store or have it couriered the same day." },
+              { icon: Store, title: "Pay on pickup", body: "No online payment — settle at the counter when you collect." },
             ].map((f, i) => (
               <motion.div
                 key={f.title}
@@ -194,36 +195,3 @@ function PrinterScene() {
   );
 }
 
-function Picker({
-  label,
-  options,
-  value,
-  onSelect,
-}: {
-  label: string;
-  options: { value: string; label: string }[];
-  value: string;
-  onSelect: (v: string) => void;
-}) {
-  return (
-    <div>
-      <p className="mb-2 text-sm font-medium">{label}</p>
-      <div className="flex flex-wrap gap-2">
-        {options.map((o) => (
-          <button
-            key={o.value}
-            onClick={() => onSelect(o.value)}
-            className={cn(
-              "rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors",
-              value === o.value
-                ? "border-primary bg-primary/10 text-primary"
-                : "border-border text-muted-foreground hover:border-primary/40",
-            )}
-          >
-            {o.label}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
