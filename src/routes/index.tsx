@@ -97,7 +97,7 @@ function Index() {
                   {[
                     ["Upload your files", "PDF, images, Office docs or ZIP — up to 50MB each."],
                     ["Choose your specs", "Paper, size, colour, binding and turnaround."],
-                    ["Collect &amp; pay in store", "We confirm the quote and print — you pay at pickup."],
+                    ["Collect & pay in store", "We confirm the quote and print — you pay at pickup."],
                   ].map(([title, body], i) => (
                     <li key={title} className="flex gap-3">
                       <span className="gradient-brand text-primary-foreground flex size-7 shrink-0 items-center justify-center rounded-full font-mono text-xs font-bold">
