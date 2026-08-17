@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Printer, LogOut, LayoutDashboard, ShieldCheck } from "lucide-react";
+import { Printer, LogOut, LayoutDashboard, ShieldCheck, Users } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export function SiteHeader() {
   const { user, loading } = useAuth();
-  const { isStaff } = useRoles();
+  const { isStaff, isAdmin } = useRoles();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -41,6 +41,13 @@ export function SiteHeader() {
                 <Button asChild variant="ghost" size="sm">
                   <Link to="/admin">
                     <ShieldCheck /> Staff
+                  </Link>
+                </Button>
+              )}
+              {isAdmin && (
+                <Button asChild variant="ghost" size="sm">
+                  <Link to="/users">
+                    <Users /> Users
                   </Link>
                 </Button>
               )}
