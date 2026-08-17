@@ -22,6 +22,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useRoles } from "@/hooks/use-role";
 import { STATUS_FLOW, STATUS_LABEL, money } from "@/lib/pricing";
 import { cn } from "@/lib/utils";
+import type { Database } from "@/integrations/supabase/types";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -39,6 +40,15 @@ export const Route = createFileRoute("/_authenticated/admin")({
   }),
   component: AdminPage,
 });
+
+type OrderStatus = Database["public"]["Enums"]["order_status"];
+
+type OrderPatch = {
+  status?: OrderStatus;
+  staff_price?: number | null;
+  staff_notes?: string | null;
+  assigned_printer_id?: string | null;
+};
 
 type Order = {
   id: string;
@@ -87,13 +97,13 @@ function AdminPage() {
   });
 
   const update = useMutation({
-    mutationFn: async ({ id, patch }: { id: string; patch: Record<string, unknown> }) => {
+    mutationFn: async ({ id, patch }: { id: string; patch: OrderPatch }) => {
       const { error } = await supabase.from("orders").update(patch).eq("id", id);
       if (error) throw error;
-      if (typeof patch['status'] === "string") {
+      if (patch.status) {
         await supabase
           .from("order_events")
-          .insert({ order_id: id, status: patch['status'] as never, note: "Updated by staff" });
+          .insert({ order_id: id, status: patch.status, note: "Updated by staff" });
       }
     },
     onSuccess: () => {
@@ -230,7 +240,7 @@ function OrderDetail({
 }: {
   order: Order;
   printers: { id: string; name: string; status: string; location: string | null }[];
-  onSave: (patch: Record<string, unknown>) => void;
+  onSave: (patch: OrderPatch) => void;
   saving: boolean;
 }) {
   const [price, setPrice] = useState(order.staff_price != null ? String(order.staff_price) : "");
@@ -333,7 +343,7 @@ function OrderDetail({
                 size="sm"
                 variant={order.status === s ? "brand" : "soft"}
                 disabled={saving || order.status === s}
-                onClick={() => onSave({ status: s })}
+                onClick={() => onSave({ status: s as OrderStatus })}
               >
                 {STATUS_LABEL[s]}
               </Button>
