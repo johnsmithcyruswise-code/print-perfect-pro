@@ -138,7 +138,11 @@ export function quote(specs: Specs, percentOff = 0): Quote {
 }
 
 export const money = (n: number) =>
-  new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(n);
+  new Intl.NumberFormat("en-KE", {
+    style: "currency",
+    currency: "KES",
+    maximumFractionDigits: 0,
+  }).format(n);
 
 export const STATUS_FLOW = [
   "pending",
@@ -161,7 +165,7 @@ export const STATUS_LABEL: Record<string, string> = {
 
 export const STORE = {
   name: "Bazz Computer Services",
-  address: "Plot 24, Kampala Road, Kampala, Uganda",
-  phone: "+256 700 000 000",
+  address: "Moi Avenue, Bazz Plaza, Nairobi CBD, Kenya",
+  phone: "+254 700 000 000",
   hours: "Mon–Sat · 8:00 – 19:00",
 };
