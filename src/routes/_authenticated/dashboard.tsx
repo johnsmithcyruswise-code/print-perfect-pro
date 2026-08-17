@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SiteHeader } from "@/components/site-header";
+import { LocationConsent } from "@/components/location-consent";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { STATUS_FLOW, STATUS_LABEL, money } from "@/lib/pricing";
@@ -121,6 +122,7 @@ function Dashboard() {
     <div className="min-h-screen">
       <SiteHeader />
       <main className="mx-auto max-w-6xl px-4 py-10">
+        <LocationConsent />
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="text-3xl font-extrabold tracking-tight">Your print jobs</h1>
