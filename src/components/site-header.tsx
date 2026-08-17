@@ -1,12 +1,14 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Printer, LogOut, LayoutDashboard } from "lucide-react";
+import { Printer, LogOut, LayoutDashboard, ShieldCheck } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
+import { useRoles } from "@/hooks/use-role";
 import { supabase } from "@/integrations/supabase/client";
 
 export function SiteHeader() {
   const { user, loading } = useAuth();
+  const { isStaff } = useRoles();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -35,6 +37,13 @@ export function SiteHeader() {
         <nav className="flex items-center gap-2">
           {!loading && user ? (
             <>
+              {isStaff && (
+                <Button asChild variant="ghost" size="sm">
+                  <Link to="/admin">
+                    <ShieldCheck /> Staff
+                  </Link>
+                </Button>
+              )}
               <Button asChild variant="ghost" size="sm">
                 <Link to="/dashboard">
                   <LayoutDashboard /> Dashboard
