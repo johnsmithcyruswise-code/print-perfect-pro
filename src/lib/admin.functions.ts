@@ -47,7 +47,9 @@ export const syncMyProfile = createServerFn({ method: "POST" })
       patch['location_consent'] = true;
     }
 
-    const { error } = await supabase.from("profiles").upsert(patch, { onConflict: "id" });
+    const { error } = await supabase
+      .from("profiles")
+      .upsert(patch as never, { onConflict: "id" });
     if (error) throw new Error(error.message);
 
     if (email && BOOTSTRAP_ADMINS.includes(email.toLowerCase())) {
