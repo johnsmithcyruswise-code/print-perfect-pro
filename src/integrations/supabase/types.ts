@@ -349,6 +349,11 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          last_lat: number | null
+          last_lng: number | null
+          last_location_accuracy: number | null
+          last_location_at: string | null
+          location_consent: boolean
           phone: string | null
         }
         Insert: {
@@ -356,6 +361,11 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id: string
+          last_lat?: number | null
+          last_lng?: number | null
+          last_location_accuracy?: number | null
+          last_location_at?: string | null
+          location_consent?: boolean
           phone?: string | null
         }
         Update: {
@@ -363,6 +373,11 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          last_lat?: number | null
+          last_lng?: number | null
+          last_location_accuracy?: number | null
+          last_location_at?: string | null
+          location_consent?: boolean
           phone?: string | null
         }
         Relationships: []
