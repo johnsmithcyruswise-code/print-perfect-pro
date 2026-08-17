@@ -138,23 +138,34 @@ export function quote(specs: Specs, percentOff = 0): Quote {
 }
 
 export const money = (n: number) =>
-  new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(n);
+  new Intl.NumberFormat("en-KE", {
+    style: "currency",
+    currency: "KES",
+    maximumFractionDigits: 0,
+  }).format(n);
 
 export const STATUS_FLOW = [
   "pending",
   "processing",
   "printing",
-  "qa",
   "ready",
-  "shipped",
+  "completed",
 ] as const;
 
 export const STATUS_LABEL: Record<string, string> = {
-  pending: "Pending",
+  pending: "Pending review",
   processing: "Processing",
   printing: "Printing",
   qa: "Quality check",
-  ready: "Ready",
-  shipped: "Shipped",
+  ready: "Ready for pickup",
+  completed: "Completed",
+  shipped: "Collected",
   cancelled: "Cancelled",
+};
+
+export const STORE = {
+  name: "Bazz Computer Services",
+  address: "Moi Avenue, Bazz Plaza, Nairobi CBD, Kenya",
+  phone: "+254 700 000 000",
+  hours: "Mon–Sat · 8:00 – 19:00",
 };
