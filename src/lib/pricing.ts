@@ -144,17 +144,24 @@ export const STATUS_FLOW = [
   "pending",
   "processing",
   "printing",
-  "qa",
   "ready",
-  "shipped",
+  "completed",
 ] as const;
 
 export const STATUS_LABEL: Record<string, string> = {
-  pending: "Pending",
+  pending: "Pending review",
   processing: "Processing",
   printing: "Printing",
   qa: "Quality check",
-  ready: "Ready",
-  shipped: "Shipped",
+  ready: "Ready for pickup",
+  completed: "Completed",
+  shipped: "Collected",
   cancelled: "Cancelled",
+};
+
+export const STORE = {
+  name: "Bazz Computer Services",
+  address: "Plot 24, Kampala Road, Kampala, Uganda",
+  phone: "+256 700 000 000",
+  hours: "Mon–Sat · 8:00 – 19:00",
 };
