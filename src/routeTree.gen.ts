@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDocumentsRouteImport } from './routes/_authenticated/documents'
+import { Route as AuthenticatedEditorRouteImport } from './routes/_authenticated/editor'
 import { Route as AuthenticatedOrderRouteImport } from './routes/_authenticated/order'
 import { Route as AuthenticatedPrintersRouteImport } from './routes/_authenticated/printers'
 import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
@@ -48,6 +49,11 @@ const AuthenticatedDocumentsRoute = AuthenticatedDocumentsRouteImport.update({
   path: '/documents',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedEditorRoute = AuthenticatedEditorRouteImport.update({
+  id: '/editor',
+  path: '/editor',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedOrderRoute = AuthenticatedOrderRouteImport.update({
   id: '/order',
   path: '/order',
@@ -70,6 +76,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/documents': typeof AuthenticatedDocumentsRoute
+  '/editor': typeof AuthenticatedEditorRoute
   '/order': typeof AuthenticatedOrderRoute
   '/printers': typeof AuthenticatedPrintersRoute
   '/users': typeof AuthenticatedUsersRoute
@@ -80,6 +87,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/documents': typeof AuthenticatedDocumentsRoute
+  '/editor': typeof AuthenticatedEditorRoute
   '/order': typeof AuthenticatedOrderRoute
   '/printers': typeof AuthenticatedPrintersRoute
   '/users': typeof AuthenticatedUsersRoute
@@ -92,6 +100,7 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/documents': typeof AuthenticatedDocumentsRoute
+  '/_authenticated/editor': typeof AuthenticatedEditorRoute
   '/_authenticated/order': typeof AuthenticatedOrderRoute
   '/_authenticated/printers': typeof AuthenticatedPrintersRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
@@ -104,6 +113,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/dashboard'
     | '/documents'
+    | '/editor'
     | '/order'
     | '/printers'
     | '/users'
@@ -114,6 +124,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/dashboard'
     | '/documents'
+    | '/editor'
     | '/order'
     | '/printers'
     | '/users'
@@ -125,6 +136,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/dashboard'
     | '/_authenticated/documents'
+    | '/_authenticated/editor'
     | '/_authenticated/order'
     | '/_authenticated/printers'
     | '/_authenticated/users'
@@ -180,6 +192,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDocumentsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/editor': {
+      id: '/_authenticated/editor'
+      path: '/editor'
+      fullPath: '/editor'
+      preLoaderRoute: typeof AuthenticatedEditorRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/order': {
       id: '/_authenticated/order'
       path: '/order'
@@ -208,6 +227,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDocumentsRoute: typeof AuthenticatedDocumentsRoute
+  AuthenticatedEditorRoute: typeof AuthenticatedEditorRoute
   AuthenticatedOrderRoute: typeof AuthenticatedOrderRoute
   AuthenticatedPrintersRoute: typeof AuthenticatedPrintersRoute
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
@@ -217,6 +237,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDocumentsRoute: AuthenticatedDocumentsRoute,
+  AuthenticatedEditorRoute: AuthenticatedEditorRoute,
   AuthenticatedOrderRoute: AuthenticatedOrderRoute,
   AuthenticatedPrintersRoute: AuthenticatedPrintersRoute,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,
