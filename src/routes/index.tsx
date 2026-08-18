@@ -134,6 +134,48 @@ function Index() {
         </section>
 
         <section className="mx-auto max-w-6xl px-4 pb-24">
+          <h2 className="text-sm font-bold tracking-wide uppercase">Quick actions</h2>
+          <div className="mt-4 mb-16 grid gap-3 sm:grid-cols-3">
+            {[
+              {
+                icon: UploadCloud,
+                title: "New print job",
+                body: "Upload files and pick your specs.",
+                to: "/order" as const,
+              },
+              {
+                icon: FileText,
+                title: "Document workspace",
+                body: "Templates, autosave and instant print.",
+                to: "/documents" as const,
+              },
+              {
+                icon: ScanLine,
+                title: "Track my orders",
+                body: "Live status from prepress to pickup.",
+                to: "/dashboard" as const,
+              },
+            ].map((a, i) => (
+              <motion.div
+                key={a.title}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.06 }}
+              >
+                <Link
+                  to={a.to}
+                  className="glass-card hover-lift block h-full rounded-2xl p-6"
+                >
+                  <a.icon className="text-brand size-6" />
+                  <h3 className="mt-4 flex items-center gap-2 font-bold">
+                    {a.title} <ArrowRight className="size-4" />
+                  </h3>
+                  <p className="text-muted-foreground mt-2 text-sm">{a.body}</p>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
               { icon: UploadCloud, title: "Upload anything", body: "PDFs, images, Office files and archives up to 50MB each." },
@@ -158,6 +200,46 @@ function Index() {
         </section>
 
         <section className="mx-auto max-w-6xl px-4 pb-28">
+          <h2 className="text-center text-3xl font-extrabold tracking-tight">
+            Nairobi trusts us with their pages
+          </h2>
+          <div className="mt-10 mb-24 grid gap-4 md:grid-cols-3">
+            {[
+              {
+                quote:
+                  "Uploaded my thesis at midnight, collected it bound before my 9am defence. Flawless.",
+                name: "Wanjiru M.",
+                role: "Postgraduate student",
+              },
+              {
+                quote:
+                  "The status tracking means I stop calling to ask if my flyers are ready. I just look.",
+                name: "Otieno K.",
+                role: "Event organiser",
+              },
+              {
+                quote:
+                  "We draft the letters in their editor and print straight downstairs. Huge time saver.",
+                name: "Amina S.",
+                role: "Office administrator",
+              },
+            ].map((t, i) => (
+              <motion.figure
+                key={t.name}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08 }}
+                className="glass-card rounded-2xl p-6"
+              >
+                <Quote className="text-primary size-5" />
+                <blockquote className="mt-4 text-sm">{t.quote}</blockquote>
+                <figcaption className="text-muted-foreground mt-4 text-xs">
+                  <span className="text-foreground font-semibold">{t.name}</span> · {t.role}
+                </figcaption>
+              </motion.figure>
+            ))}
+          </div>
           <div className="gradient-brand text-primary-foreground rounded-3xl px-8 py-14 text-center">
             <h2 className="text-3xl font-extrabold tracking-tight">Ready to hit print?</h2>
             <p className="mx-auto mt-3 max-w-md text-sm opacity-90">
