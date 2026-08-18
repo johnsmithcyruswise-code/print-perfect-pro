@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Printer, LogOut, LayoutDashboard, ShieldCheck, Users } from "lucide-react";
+import { LogOut, LayoutDashboard, ShieldCheck, Users } from "lucide-react";
+import pkLogo from "@/assets/pk-logo.png.asset.json";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
@@ -23,11 +24,13 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
         <Link to="/" className="flex items-center gap-2">
-          <span className="gradient-brand flex size-9 items-center justify-center rounded-xl text-primary-foreground">
-            <Printer className="size-5" />
-          </span>
+          <img
+            src={pkLogo.url}
+            alt="Planned Kid Computer Services logo"
+            className="h-9 w-auto"
+          />
           <span className="text-sm leading-tight font-extrabold tracking-tight">
-            BAZZ
+            PLANNED KID
             <span className="text-muted-foreground block text-[10px] font-medium tracking-[0.18em]">
               COMPUTER SERVICES
             </span>
