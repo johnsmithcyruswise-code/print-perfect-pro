@@ -135,7 +135,7 @@ export function EditorToolbar({ editor }: { editor: Editor }) {
         label="Insert link"
         active={editor.isActive("link")}
         onClick={() => {
-          const url = window.prompt("Link URL", editor.getAttributes("link").href ?? "https://");
+          const url = window.prompt("Link URL", (editor.getAttributes("link")["href"] as string) ?? "https://");
           if (url === null) return;
           if (url === "") editor.chain().focus().unsetLink().run();
           else editor.chain().focus().setLink({ href: url }).run();
