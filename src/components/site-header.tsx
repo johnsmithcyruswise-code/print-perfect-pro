@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { LogOut, LayoutDashboard, ShieldCheck, Users } from "lucide-react";
+import { LogOut, LayoutDashboard, ShieldCheck, Users, FileText } from "lucide-react";
 import pkLogo from "@/assets/pk-logo.png.asset.json";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -31,7 +31,7 @@ export function SiteHeader() {
           />
         </Link>
 
-        <nav className="flex items-center gap-2">
+        <nav className="flex flex-wrap items-center justify-end gap-1 sm:gap-2">
           {!loading && user ? (
             <>
               {isStaff && (
@@ -48,6 +48,11 @@ export function SiteHeader() {
                   </Link>
                 </Button>
               )}
+              <Button asChild variant="ghost" size="sm">
+                <Link to="/documents">
+                  <FileText /> Documents
+                </Link>
+              </Button>
               <Button asChild variant="ghost" size="sm">
                 <Link to="/dashboard">
                   <LayoutDashboard /> Dashboard
