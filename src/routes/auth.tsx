@@ -83,10 +83,7 @@ function AuthPage() {
     <main className="flex min-h-screen items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         <Link to="/" className="mb-8 flex items-center justify-center gap-2">
-          <span className="gradient-brand flex size-10 items-center justify-center rounded-xl text-primary-foreground">
-            <Printer className="size-5" />
-          </span>
-          <span className="text-lg font-extrabold tracking-tight">Planned Kid Computer Services</span>
+          <img src={pkLogo.url} alt="Planned Kid Computer Services logo" className="h-12 w-auto" />
         </Link>
 
         <div className="glass-card rounded-3xl p-6">
