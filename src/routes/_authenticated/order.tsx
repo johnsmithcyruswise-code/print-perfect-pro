@@ -41,13 +41,13 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/_authenticated/order")({
   head: () => ({
     meta: [
-      { title: "New print order — Bazz Computer Services" },
+      { title: "New print order — Planned Kid Computer Services" },
       {
         name: "description",
         content:
           "Upload your files, choose paper, size and finishing, and submit your print job. We prepare your quote in store.",
       },
-      { property: "og:title", content: "New print order — Bazz Computer Services" },
+      { property: "og:title", content: "New print order — Planned Kid Computer Services" },
       { property: "og:description", content: "Upload files and submit a print job in three steps." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

@@ -15,13 +15,13 @@ import { listAppUsers, deleteAppUser } from "@/lib/admin.functions";
 export const Route = createFileRoute("/_authenticated/users")({
   head: () => ({
     meta: [
-      { title: "Customer accounts — Bazz Computer Services" },
+      { title: "Customer accounts — Planned Kid Computer Services" },
       {
         name: "description",
-        content: "Admin console for Bazz staff: review customer accounts, shared locations and remove users.",
+        content: "Admin console for PK staff: review customer accounts, shared locations and remove users.",
       },
-      { property: "og:title", content: "Customer accounts — Bazz Computer Services" },
-      { property: "og:description", content: "Admin console for customer accounts at Bazz." },
+      { property: "og:title", content: "Customer accounts — Planned Kid Computer Services" },
+      { property: "og:description", content: "Admin console for customer accounts at PK." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -59,7 +59,7 @@ function UsersPage() {
           <ShieldAlert className="text-destructive mx-auto size-10" />
           <h1 className="mt-4 text-2xl font-extrabold">Admins only</h1>
           <p className="text-muted-foreground mt-2 text-sm">
-            Account management is limited to Bazz administrators.
+            Account management is limited to PK administrators.
           </p>
           <Button variant="hero" className="mt-6" asChild>
             <Link to="/dashboard">Back to my orders</Link>

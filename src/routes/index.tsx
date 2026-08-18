@@ -19,13 +19,13 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Bazz Computer Services — Print Shop, Reinvented" },
+      { title: "Planned Kid Computer Services — Print Shop, Reinvented" },
       {
         name: "description",
         content:
           "Upload artwork, choose paper and finishing, and collect in store. Same-day printing and live job tracking in Nairobi.",
       },
-      { property: "og:title", content: "Bazz Computer Services — Print Shop, Reinvented" },
+      { property: "og:title", content: "Planned Kid Computer Services — Print Shop, Reinvented" },
       {
         property: "og:description",
         content: "Same-day printing, live order tracking and pay-on-pickup convenience.",
@@ -55,7 +55,7 @@ function Index() {
                 <span className="text-gradient-brand">reinvented in the browser.</span>
               </h1>
               <p className="text-muted-foreground mt-6 max-w-lg text-lg">
-                Bazz Computer Services turns files into finished work. Upload artwork, tune every
+                Planned Kid Computer Services turns files into finished work. Upload artwork, tune every
                 spec and track your job from prepress to pickup. No online payment — our team
                 confirms your quote and you settle in store.
               </p>
@@ -164,7 +164,7 @@ function Index() {
       </main>
 
       <footer className="border-border text-muted-foreground border-t px-4 py-10 text-center text-xs">
-        © {new Date().getFullYear()} Bazz Computer Services. Printing, done properly.
+        © {new Date().getFullYear()} Planned Kid Computer Services. Printing, done properly.
       </footer>
     </div>
   );

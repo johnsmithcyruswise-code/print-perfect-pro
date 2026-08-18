@@ -15,13 +15,13 @@ import { useRoles } from "@/hooks/use-role";
 export const Route = createFileRoute("/_authenticated/printers")({
   head: () => ({
     meta: [
-      { title: "Printer management — Bazz Computer Services" },
+      { title: "Printer management — Planned Kid Computer Services" },
       {
         name: "description",
-        content: "Register, monitor and set default printers for the Bazz production floor.",
+        content: "Register, monitor and set default printers for the PK production floor.",
       },
-      { property: "og:title", content: "Printer management — Bazz Computer Services" },
-      { property: "og:description", content: "Register and monitor Bazz shop printers." },
+      { property: "og:title", content: "Printer management — Planned Kid Computer Services" },
+      { property: "og:description", content: "Register and monitor PK shop printers." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

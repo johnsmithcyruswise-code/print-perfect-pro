@@ -34,7 +34,7 @@ export function LocationConsent() {
             },
           });
           setShared(true);
-          toast.success("Location shared with the Bazz team.");
+          toast.success("Location shared with the PK team.");
         } catch {
           toast.error("Couldn't save your location.");
         } finally {

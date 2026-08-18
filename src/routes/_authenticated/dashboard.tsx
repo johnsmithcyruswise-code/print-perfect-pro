@@ -17,12 +17,12 @@ import { STATUS_FLOW, STATUS_LABEL, money } from "@/lib/pricing";
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
-      { title: "My orders — Bazz Computer Services" },
+      { title: "My orders — Planned Kid Computer Services" },
       {
         name: "description",
-        content: "Track your print jobs, quotes and pickup status at Bazz Computer Services.",
+        content: "Track your print jobs, quotes and pickup status at Planned Kid Computer Services.",
       },
-      { property: "og:title", content: "My orders — Bazz Computer Services" },
+      { property: "og:title", content: "My orders — Planned Kid Computer Services" },
       { property: "og:description", content: "Track your print jobs and pickup status." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -127,7 +127,7 @@ function Dashboard() {
           <div>
             <h1 className="text-3xl font-extrabold tracking-tight">Your print jobs</h1>
             <p className="text-muted-foreground mt-1 text-sm">
-              Everything you've sent to the Bazz press floor.
+              Everything you've sent to the PK press floor.
             </p>
           </div>
           <Button variant="hero" size="lg" asChild>

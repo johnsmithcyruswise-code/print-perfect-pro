@@ -79,15 +79,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Bazz Computer Services — Print Shop" },
+      { title: "Planned Kid Computer Services — Print Shop" },
       {
         name: "description",
-        content: "Upload, customise and track professional print jobs with Bazz Computer Services.",
+        content: "Upload, customise and track professional print jobs with Planned Kid Computer Services.",
       },
-      { property: "og:title", content: "Bazz Computer Services — Print Shop" },
+      { property: "og:title", content: "Planned Kid Computer Services — Print Shop" },
       {
         property: "og:description",
-        content: "Upload, customise and track professional print jobs with Bazz Computer Services.",
+        content: "Upload, customise and track professional print jobs with Planned Kid Computer Services.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

@@ -13,10 +13,10 @@ import { useAuth } from "@/hooks/use-auth";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in — Bazz Computer Services" },
-      { name: "description", content: "Sign in or create a Bazz print shop account to order and track prints." },
-      { property: "og:title", content: "Sign in — Bazz Computer Services" },
-      { property: "og:description", content: "Sign in or create a Bazz print shop account." },
+      { title: "Sign in — Planned Kid Computer Services" },
+      { name: "description", content: "Sign in or create a PK print shop account to order and track prints." },
+      { property: "og:title", content: "Sign in — Planned Kid Computer Services" },
+      { property: "og:description", content: "Sign in or create a PK print shop account." },
     ],
   }),
   component: AuthPage,
@@ -86,7 +86,7 @@ function AuthPage() {
           <span className="gradient-brand flex size-10 items-center justify-center rounded-xl text-primary-foreground">
             <Printer className="size-5" />
           </span>
-          <span className="text-lg font-extrabold tracking-tight">Bazz Computer Services</span>
+          <span className="text-lg font-extrabold tracking-tight">Planned Kid Computer Services</span>
         </Link>
 
         <div className="glass-card rounded-3xl p-6">

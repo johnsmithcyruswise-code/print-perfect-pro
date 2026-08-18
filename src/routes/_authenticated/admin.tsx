@@ -27,13 +27,13 @@ import type { Database } from "@/integrations/supabase/types";
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
-      { title: "Staff console — Bazz Computer Services" },
+      { title: "Staff console — Planned Kid Computer Services" },
       {
         name: "description",
-        content: "Kanban production board, quoting and printer assignment for Bazz staff.",
+        content: "Kanban production board, quoting and printer assignment for PK staff.",
       },
-      { property: "og:title", content: "Staff console — Bazz Computer Services" },
-      { property: "og:description", content: "Production board and quoting for Bazz staff." },
+      { property: "og:title", content: "Staff console — Planned Kid Computer Services" },
+      { property: "og:description", content: "Production board and quoting for PK staff." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -134,7 +134,7 @@ function AdminPage() {
           <ShieldAlert className="text-destructive mx-auto size-10" />
           <h1 className="mt-4 text-2xl font-extrabold">Staff only</h1>
           <p className="text-muted-foreground mt-2 text-sm">
-            This console is limited to Bazz team members.
+            This console is limited to PK team members.
           </p>
           <Button variant="hero" className="mt-6" asChild>
             <Link to="/dashboard">Back to my orders</Link>
