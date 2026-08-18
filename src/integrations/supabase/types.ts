@@ -38,6 +38,97 @@ export type Database = {
         }
         Relationships: []
       }
+      document_versions: {
+        Row: {
+          content: Json
+          document_id: string
+          id: string
+          saved_at: string
+          version: number
+          word_count: number
+        }
+        Insert: {
+          content: Json
+          document_id: string
+          id?: string
+          saved_at?: string
+          version: number
+          word_count?: number
+        }
+        Update: {
+          content?: Json
+          document_id?: string
+          id?: string
+          saved_at?: string
+          version?: number
+          word_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_versions_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documents: {
+        Row: {
+          content: Json
+          content_plain: string
+          created_at: string
+          id: string
+          last_autosave: string | null
+          order_id: string | null
+          paper_size: string
+          template_used: string | null
+          title: string
+          updated_at: string
+          user_id: string
+          version: number
+          word_count: number
+        }
+        Insert: {
+          content?: Json
+          content_plain?: string
+          created_at?: string
+          id?: string
+          last_autosave?: string | null
+          order_id?: string | null
+          paper_size?: string
+          template_used?: string | null
+          title?: string
+          updated_at?: string
+          user_id: string
+          version?: number
+          word_count?: number
+        }
+        Update: {
+          content?: Json
+          content_plain?: string
+          created_at?: string
+          id?: string
+          last_autosave?: string | null
+          order_id?: string | null
+          paper_size?: string
+          template_used?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+          version?: number
+          word_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           created_at: string
@@ -412,6 +503,39 @@ export type Database = {
           id?: string
           last_accessed?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      templates: {
+        Row: {
+          category: string
+          content: Json
+          created_at: string
+          description: string | null
+          id: string
+          is_public: boolean
+          name: string
+          paper_size: string
+        }
+        Insert: {
+          category?: string
+          content: Json
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean
+          name: string
+          paper_size?: string
+        }
+        Update: {
+          category?: string
+          content?: Json
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean
+          name?: string
+          paper_size?: string
         }
         Relationships: []
       }
