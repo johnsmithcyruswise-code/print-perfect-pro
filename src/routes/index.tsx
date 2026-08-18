@@ -10,9 +10,13 @@ import {
   MapPin,
   Clock,
   Phone,
+  FileText,
+  ScanLine,
+  Quote,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/site-header";
+import { SplashScreen } from "@/components/splash";
 import { STORE } from "@/lib/pricing";
 import { cn } from "@/lib/utils";
 
@@ -38,6 +42,7 @@ export const Route = createFileRoute("/")({
 function Index() {
   return (
     <div className="min-h-screen">
+      <SplashScreen />
       <SiteHeader />
 
       <main>
@@ -66,7 +71,9 @@ function Index() {
                   </Link>
                 </Button>
                 <Button variant="soft" size="xl" asChild>
-                  <Link to="/auth">Track an order</Link>
+                  <Link to="/documents">
+                    <FileText /> Write a document
+                  </Link>
                 </Button>
               </div>
               <dl className="mt-12 grid max-w-md grid-cols-3 gap-6">
