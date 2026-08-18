@@ -29,12 +29,6 @@ export function SiteHeader() {
             alt="Planned Kid Computer Services logo"
             className="h-9 w-auto"
           />
-          <span className="text-sm leading-tight font-extrabold tracking-tight">
-            PLANNED KID
-            <span className="text-muted-foreground block text-[10px] font-medium tracking-[0.18em]">
-              COMPUTER SERVICES
-            </span>
-          </span>
         </Link>
 
         <nav className="flex items-center gap-2">
