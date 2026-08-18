@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Printer, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import pkLogo from "@/assets/pk-logo.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,10 +14,10 @@ import { useAuth } from "@/hooks/use-auth";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in — Bazz Computer Services" },
-      { name: "description", content: "Sign in or create a Bazz print shop account to order and track prints." },
-      { property: "og:title", content: "Sign in — Bazz Computer Services" },
-      { property: "og:description", content: "Sign in or create a Bazz print shop account." },
+      { title: "Sign in — Planned Kid Computer Services" },
+      { name: "description", content: "Sign in or create a PK print shop account to order and track prints." },
+      { property: "og:title", content: "Sign in — Planned Kid Computer Services" },
+      { property: "og:description", content: "Sign in or create a PK print shop account." },
     ],
   }),
   component: AuthPage,
@@ -83,10 +84,7 @@ function AuthPage() {
     <main className="flex min-h-screen items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         <Link to="/" className="mb-8 flex items-center justify-center gap-2">
-          <span className="gradient-brand flex size-10 items-center justify-center rounded-xl text-primary-foreground">
-            <Printer className="size-5" />
-          </span>
-          <span className="text-lg font-extrabold tracking-tight">Bazz Computer Services</span>
+          <img src={pkLogo.url} alt="Planned Kid Computer Services logo" className="h-12 w-auto" />
         </Link>
 
         <div className="glass-card rounded-3xl p-6">

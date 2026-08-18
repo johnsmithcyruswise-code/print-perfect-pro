@@ -164,8 +164,8 @@ export const STATUS_LABEL: Record<string, string> = {
 };
 
 export const STORE = {
-  name: "Bazz Computer Services",
-  address: "Moi Avenue, Bazz Plaza, Nairobi CBD, Kenya",
+  name: "Planned Kid Computer Services",
+  address: "Moi Avenue, PK Plaza, Nairobi CBD, Kenya",
   phone: "+254 700 000 000",
   hours: "Mon–Sat · 8:00 – 19:00",
 };

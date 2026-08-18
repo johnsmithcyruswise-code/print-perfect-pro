@@ -65,7 +65,7 @@
   --color-brand-foreground: var(--brand-foreground);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
-  --shadow-glow: 0 20px 60px -20px oklch(0.517 0.232 288.9 / 0.45);
+  --shadow-glow: 0 20px 60px -20px oklch(0.297 0.115 269 / 0.45);
   --shadow-lift: 0 12px 30px -12px oklch(0.208 0.04 265.8 / 0.25);
 }
 
@@ -77,27 +77,27 @@
   --card-foreground: oklch(0.208 0.04 265.8);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.208 0.04 265.8);
-  --primary: oklch(0.517 0.232 288.9);
-  --primary-foreground: oklch(0.99 0.005 288);
-  --brand: oklch(0.705 0.193 39.2);
-  --brand-foreground: oklch(0.16 0.03 39);
-  --success: oklch(0.775 0.151 171.7);
-  --success-foreground: oklch(0.2 0.04 172);
-  --secondary: oklch(0.955 0.012 288);
-  --secondary-foreground: oklch(0.36 0.16 289);
+  --primary: oklch(0.297 0.115 269);
+  --primary-foreground: oklch(0.99 0.005 250);
+  --brand: oklch(0.577 0.245 27.3);
+  --brand-foreground: oklch(0.985 0.01 27);
+  --success: oklch(0.612 0.147 161);
+  --success-foreground: oklch(0.985 0.01 161);
+  --secondary: oklch(0.958 0.01 255);
+  --secondary-foreground: oklch(0.297 0.115 269);
   --muted: oklch(0.96 0.006 260);
-  --muted-foreground: oklch(0.55 0.03 265);
-  --accent: oklch(0.95 0.02 288);
-  --accent-foreground: oklch(0.36 0.16 289);
+  --muted-foreground: oklch(0.554 0.041 257.4);
+  --accent: oklch(0.95 0.02 255);
+  --accent-foreground: oklch(0.297 0.115 269);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
   --border: oklch(0.915 0.012 265);
   --input: oklch(0.915 0.012 265);
-  --ring: oklch(0.517 0.232 288.9);
-  --chart-1: oklch(0.517 0.232 288.9);
-  --chart-2: oklch(0.705 0.193 39.2);
-  --chart-3: oklch(0.775 0.151 171.7);
-  --chart-4: oklch(0.62 0.16 300);
+  --ring: oklch(0.297 0.115 269);
+  --chart-1: oklch(0.297 0.115 269);
+  --chart-2: oklch(0.577 0.245 27.3);
+  --chart-3: oklch(0.612 0.147 161);
+  --chart-4: oklch(0.55 0.15 250);
   --chart-5: oklch(0.65 0.1 250);
   --sidebar: oklch(0.984 0.003 247.858);
   --sidebar-foreground: oklch(0.129 0.042 264.695);
@@ -168,7 +168,7 @@
   background-image: linear-gradient(
     120deg,
     var(--primary) 0%,
-    oklch(0.6 0.22 320) 55%,
+    oklch(0.55 0.16 250) 55%,
     var(--brand) 100%
   );
 }
