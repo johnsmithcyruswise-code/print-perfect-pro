@@ -168,7 +168,7 @@
   background-image: linear-gradient(
     120deg,
     var(--primary) 0%,
-    oklch(0.6 0.22 320) 55%,
+    oklch(0.55 0.16 250) 55%,
     var(--brand) 100%
   );
 }
