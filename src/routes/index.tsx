@@ -121,11 +121,20 @@ function Index() {
                   <p className="flex items-center gap-2">
                     <MapPin className="text-primary size-3.5" /> {STORE.address}
                   </p>
+                  {STORE.hoursList.map((h) => (
+                    <p key={h.day} className="flex items-center gap-2">
+                      <Clock className="text-primary size-3.5" /> {h.day} · {h.time}
+                    </p>
+                  ))}
                   <p className="flex items-center gap-2">
-                    <Clock className="text-primary size-3.5" /> {STORE.hours}
-                  </p>
-                  <p className="flex items-center gap-2">
-                    <Phone className="text-primary size-3.5" /> {STORE.phone}
+                    <Phone className="text-primary size-3.5" />
+                    <a className="hover:text-foreground" href={telHref(STORE.phone)}>
+                      {STORE.phone}
+                    </a>
+                    <span>·</span>
+                    <a className="hover:text-foreground" href={telHref(STORE.phone2)}>
+                      {STORE.phone2}
+                    </a>
                   </p>
                 </div>
               </div>
