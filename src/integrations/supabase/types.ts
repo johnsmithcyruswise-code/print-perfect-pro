@@ -359,6 +359,7 @@ export type Database = {
           pages_printed: number
           printed_at: string
           printer_id: string | null
+          status: string
         }
         Insert: {
           ezeep_job_id?: string | null
@@ -368,6 +369,7 @@ export type Database = {
           pages_printed?: number
           printed_at?: string
           printer_id?: string | null
+          status?: string
         }
         Update: {
           ezeep_job_id?: string | null
@@ -377,6 +379,7 @@ export type Database = {
           pages_printed?: number
           printed_at?: string
           printer_id?: string | null
+          status?: string
         }
         Relationships: [
           {
