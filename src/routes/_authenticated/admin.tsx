@@ -345,10 +345,152 @@ function OrderDetail({
             ))}
           </div>
         </div>
+
+        <PrintHistory order={order} printers={printers} />
       </div>
     </>
   );
 }
+
+function PrintHistory({
+  order,
+  printers,
+}: {
+  order: Order;
+  printers: { id: string; name: string; status: string; location: string | null }[];
+}) {
+  const queryClient = useQueryClient();
+  const [open, setOpen] = useState(false);
+
+  const { data: logs } = useQuery({
+    queryKey: ["print-logs", order.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("print_logs")
+        .select("*")
+        .eq("order_id", order.id)
+        .order("printed_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const log = useMutation({
+    mutationFn: async (status: "success" | "failed") => {
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) throw new Error("Not signed in");
+      const { error } = await supabase.from("print_logs").insert({
+        order_id: order.id,
+        printer_id: order.assigned_printer_id,
+        operator_id: auth.user.id,
+        pages_printed: order.quantity,
+        status,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["print-logs", order.id] }),
+  });
+
+  const printerName = (id: string | null) =>
+    printers.find((p) => p.id === id)?.name ?? "Unassigned";
+
+  function printSummary() {
+    const w = window.open("", "_blank", "width=720,height=900");
+    if (!w) {
+      toast.error("Allow pop-ups to print the summary.");
+      log.mutate("failed");
+      return;
+    }
+    w.document.write(`<!doctype html><html><head><title>${order.order_number}</title>
+      <style>body{font-family:system-ui,sans-serif;padding:32px;color:#111}
+      h1{font-size:20px;margin:0 0 4px}h2{font-size:12px;color:#666;margin:0 0 24px;font-weight:600}
+      table{width:100%;border-collapse:collapse;font-size:13px}
+      td{padding:6px 0;border-bottom:1px solid #eee}
+      td:first-child{color:#666;width:45%;text-transform:uppercase;font-size:11px;letter-spacing:.04em}
+      footer{margin-top:32px;font-size:11px;color:#666}</style></head><body>
+      <h1>${STORE.name}</h1><h2>${STORE.address} · ${STORE.phone}</h2>
+      <table>
+        <tr><td>Order</td><td>${order.order_number}</td></tr>
+        <tr><td>Received</td><td>${new Date(order.created_at).toLocaleString()}</td></tr>
+        <tr><td>Quantity</td><td>${order.quantity}</td></tr>
+        <tr><td>Paper</td><td>${order.paper_size.toUpperCase()} · ${order.paper_type}</td></tr>
+        <tr><td>Colour</td><td>${order.color_mode}</td></tr>
+        <tr><td>Sides</td><td>${order.sides}</td></tr>
+        <tr><td>Binding</td><td>${order.binding}</td></tr>
+        <tr><td>Turnaround</td><td>${order.turnaround}</td></tr>
+        <tr><td>Printer</td><td>${printerName(order.assigned_printer_id)}</td></tr>
+        <tr><td>Quoted price</td><td>${order.staff_price != null ? money(Number(order.staff_price)) : "—"}</td></tr>
+        <tr><td>Status</td><td>${STATUS_LABEL[order.status] ?? order.status}</td></tr>
+      </table>
+      <footer>Printed ${new Date().toLocaleString()} — ${STORE.name}</footer>
+      </body></html>`);
+    w.document.close();
+    w.focus();
+    w.print();
+    log.mutate("success");
+    toast.success("Summary sent to printer and logged.");
+  }
+
+  return (
+    <div>
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-bold tracking-wide uppercase">Print history</p>
+        <Button size="sm" variant="soft" onClick={() => setOpen(true)}>
+          <PrinterIcon /> Print summary
+        </Button>
+      </div>
+      <ul className="mt-3 space-y-2">
+        {(logs ?? []).map((l) => (
+          <li key={l.id} className="bg-secondary rounded-lg p-2.5 text-xs">
+            <div className="flex items-center justify-between gap-2">
+              <span className="font-semibold">{printerName(l.printer_id)}</span>
+              <Badge variant={l.status === "failed" ? "destructive" : "secondary"}>
+                {l.status ?? "success"}
+              </Badge>
+            </div>
+            <p className="text-muted-foreground mt-1">
+              {new Date(l.printed_at).toLocaleString()} · {l.pages_printed} page(s)
+            </p>
+          </li>
+        ))}
+        {(logs ?? []).length === 0 && (
+          <li className="text-muted-foreground text-xs">Nothing printed yet.</li>
+        )}
+      </ul>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Print order summary</DialogTitle>
+            <DialogDescription>
+              A clean job ticket for {order.order_number} will open in your browser print dialog and
+              be recorded in print history.
+            </DialogDescription>
+          </DialogHeader>
+          <dl className="grid grid-cols-2 gap-3 text-sm">
+            <Spec label="Quantity" value={String(order.quantity)} />
+            <Spec label="Printer" value={printerName(order.assigned_printer_id)} />
+          </dl>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant="hero"
+              onClick={() => {
+                setOpen(false);
+                printSummary();
+              }}
+            >
+              <PrinterIcon /> Print now
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
 
 function Spec({ label, value }: { label: string; value: string }) {
   return (
