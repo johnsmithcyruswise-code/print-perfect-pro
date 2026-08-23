@@ -298,26 +298,21 @@ function OrderDetail({
 
         <div className="space-y-2">
           <Label>Assign printer</Label>
-          <div className="flex flex-wrap gap-2">
-            {printers.map((p) => (
-              <button
-                key={p.id}
-                onClick={() => setPrinterId(p.id === printerId ? "" : p.id)}
-                className={cn(
-                  "rounded-xl border px-3 py-2 text-left text-xs",
-                  printerId === p.id
-                    ? "border-primary bg-primary/10 text-primary font-semibold"
-                    : "border-border bg-card",
-                )}
-              >
-                <span className="block">{p.name}</span>
-                <span className="text-muted-foreground block text-[10px]">
-                  {p.location ?? "—"} · {p.status}
-                </span>
-              </button>
-            ))}
-          </div>
+          <Select value={printerId || "none"} onValueChange={(v) => setPrinterId(v === "none" ? "" : v)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Unassigned" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">Unassigned</SelectItem>
+              {printers.map((p) => (
+                <SelectItem key={p.id} value={p.id}>
+                  {p.name} · {p.location ?? "—"} ({p.status})
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
+
 
         <Button
           variant="hero"
