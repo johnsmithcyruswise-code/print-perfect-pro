@@ -165,7 +165,20 @@ export const STATUS_LABEL: Record<string, string> = {
 
 export const STORE = {
   name: "Planned Kid Computer Services",
-  address: "Moi Avenue, PK Plaza, Nairobi CBD, Kenya",
-  phone: "+254 700 000 000",
-  hours: "Mon–Sat · 8:00 – 19:00",
+  tagline: "We plan, you collect.",
+  address: "4GVW+2H5, Entebbe, Uganda",
+  phone: "0772398397",
+  phone2: "0758724969",
+  whatsapp: "0772398397",
+  email: "mzedi2012@gmail.com",
+  hours: "Mon–Fri · 8:00 – 18:00",
+  hoursList: [
+    { day: "Mon – Fri", time: "8:00 AM – 6:00 PM" },
+    { day: "Saturday", time: "9:00 AM – 4:00 PM" },
+    { day: "Sunday", time: "Closed" },
+  ],
 };
+
+export const telHref = (n: string) => `tel:+256${n.replace(/^0/, "")}`;
+export const waHref = (n: string, text = "Hello Planned Kid Computer Services!") =>
+  `https://wa.me/256${n.replace(/^0/, "")}?text=${encodeURIComponent(text)}`;
