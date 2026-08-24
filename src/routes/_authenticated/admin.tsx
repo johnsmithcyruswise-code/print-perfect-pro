@@ -169,11 +169,17 @@ function AdminPage() {
               Quote, schedule and move jobs across the press floor.
             </p>
           </div>
-          <Button variant="soft" asChild>
-            <Link to="/printers">
-              <PrinterIcon /> Printers
-            </Link>
-          </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button variant="soft" asChild>
+              <Link to="/printers">
+                <PrinterIcon /> Printers
+              </Link>
+            </Button>
+            <Button variant="outline" onClick={adminSignOut}>
+              <LogOut /> Log out
+            </Button>
+          </div>
+
         </div>
 
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
