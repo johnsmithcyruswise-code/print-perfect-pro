@@ -2,7 +2,6 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import pkLogo from "@/assets/pk-logo.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -84,7 +83,7 @@ function AuthPage() {
     <main className="flex min-h-screen items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         <Link to="/" className="mb-8 flex items-center justify-center gap-2">
-          <img src={pkLogo.url} alt="Planned Kid Computer Services logo" className="h-12 w-auto" />
+          <img src="/logo.png" alt="Planned Kid Computer Services logo" className="h-12 w-auto" />
         </Link>
 
         <div className="glass-card rounded-3xl p-6">
