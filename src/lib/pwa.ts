@@ -5,10 +5,10 @@ declare global {
   }
 }
 
-export async function registerServiceWorker() {
+export async function registerServiceWorker(): Promise<ServiceWorkerRegistration | undefined> {
   if (!("serviceWorker" in navigator)) {
     console.warn("Service Workers not supported");
-    return;
+    return undefined;
   }
 
   try {
@@ -39,6 +39,7 @@ export async function registerServiceWorker() {
     return registration;
   } catch (error) {
     console.error("Service Worker registration failed:", error);
+    return undefined;
   }
 }
 

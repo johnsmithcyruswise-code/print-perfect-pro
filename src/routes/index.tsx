@@ -17,7 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/site-header";
 import { SplashScreen } from "@/components/splash";
-import { STORE } from "@/lib/pricing";
+import { STORE, telHref } from "@/lib/pricing";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
