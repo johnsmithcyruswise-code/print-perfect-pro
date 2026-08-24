@@ -1,0 +1,24 @@
+{
+  "name": "Planned Kid Computer Services",
+  "short_name": "Planned Kid",
+  "description": "Print shop and document workspace \u2014 upload, print and track jobs.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F5F7FA",
+  "theme_color": "#1E3A5F",
+  "icons": [
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

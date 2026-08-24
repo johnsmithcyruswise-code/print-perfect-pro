@@ -15,6 +15,7 @@ import {
   Quote,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { InstallAppButton } from "@/components/install-app";
 import { SiteHeader } from "@/components/site-header";
 import { SplashScreen } from "@/components/splash";
 import { STORE, telHref } from "@/lib/pricing";
@@ -70,6 +71,7 @@ function Index() {
                     Start a print job <ArrowRight />
                   </Link>
                 </Button>
+                <InstallAppButton />
                 <Button variant="soft" size="xl" asChild>
                   <Link to="/documents">
                     <FileText /> Write a document

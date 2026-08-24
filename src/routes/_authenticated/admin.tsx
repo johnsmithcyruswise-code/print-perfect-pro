@@ -1,8 +1,16 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { ShieldAlert, Printer as PrinterIcon, Package, Timer, Wallet, Save } from "lucide-react";
+import {
+  ShieldAlert,
+  Printer as PrinterIcon,
+  Package,
+  Timer,
+  Wallet,
+  Save,
+  LogOut,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -85,7 +93,17 @@ type Order = {
 function AdminPage() {
   const { isStaff, loading } = useRoles();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [selected, setSelected] = useState<Order | null>(null);
+
+  async function adminSignOut() {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    navigate({ to: "/admin/login", replace: true });
+  }
+
+
 
   const { data: orders, isLoading } = useQuery({
     queryKey: ["admin-orders"],
@@ -169,11 +187,17 @@ function AdminPage() {
               Quote, schedule and move jobs across the press floor.
             </p>
           </div>
-          <Button variant="soft" asChild>
-            <Link to="/printers">
-              <PrinterIcon /> Printers
-            </Link>
-          </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button variant="soft" asChild>
+              <Link to="/printers">
+                <PrinterIcon /> Printers
+              </Link>
+            </Button>
+            <Button variant="outline" onClick={adminSignOut}>
+              <LogOut /> Log out
+            </Button>
+          </div>
+
         </div>
 
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

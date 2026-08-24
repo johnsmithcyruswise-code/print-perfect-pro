@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import pkLogo from "@/assets/pk-logo.png.asset.json";
 
 export const APP_VERSION = "v1.2.0";
 
@@ -32,8 +31,9 @@ export function SplashScreen() {
           <div className="bg-primary/20 pointer-events-none absolute size-[32rem] rounded-full blur-[140px]" />
           <div className="relative flex flex-col items-center">
             <motion.img
-              src={pkLogo.url}
+              src="/logo.png"
               alt="Planned Kid Computer Services"
+              onError={(e) => { e.currentTarget.style.display = "none"; }}
               className="w-72 max-w-[80vw]"
               initial={{ opacity: 0, y: 18, scale: 0.94 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
