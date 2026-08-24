@@ -93,7 +93,17 @@ type Order = {
 function AdminPage() {
   const { isStaff, loading } = useRoles();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [selected, setSelected] = useState<Order | null>(null);
+
+  async function adminSignOut() {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    navigate({ to: "/admin/login", replace: true });
+  }
+
+
 
   const { data: orders, isLoading } = useQuery({
     queryKey: ["admin-orders"],
