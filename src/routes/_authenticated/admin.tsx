@@ -2,7 +2,15 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { ShieldAlert, Printer as PrinterIcon, Package, Timer, Wallet, Save } from "lucide-react";
+import {
+  ShieldAlert,
+  Printer as PrinterIcon,
+  Package,
+  Timer,
+  Wallet,
+  Save,
+  LogOut,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
