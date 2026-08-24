@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { LogOut, LayoutDashboard, ShieldCheck, Users, FileText } from "lucide-react";
+import { BrandLogo } from "@/components/brand-logo";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
@@ -23,11 +24,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
         <Link to="/" className="flex items-center gap-2">
-          <img
-            src="/logo.png"
-            alt="Planned Kid Computer Services logo"
-            className="h-9 w-auto"
-          />
+          <BrandLogo />
         </Link>
 
         <nav className="flex flex-wrap items-center justify-end gap-1 sm:gap-2">

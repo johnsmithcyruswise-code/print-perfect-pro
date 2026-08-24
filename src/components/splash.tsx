@@ -33,6 +33,7 @@ export function SplashScreen() {
             <motion.img
               src="/logo.png"
               alt="Planned Kid Computer Services"
+              onError={(e) => { e.currentTarget.style.display = "none"; }}
               className="w-72 max-w-[80vw]"
               initial={{ opacity: 0, y: 18, scale: 0.94 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
