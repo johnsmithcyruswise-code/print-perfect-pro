@@ -129,6 +129,78 @@ export type Database = {
           },
         ]
       }
+      files: {
+        Row: {
+          folder_id: string | null
+          id: string
+          name: string
+          order_id: string | null
+          size: number
+          type: string | null
+          uploaded_at: string
+          url: string
+          user_id: string
+        }
+        Insert: {
+          folder_id?: string | null
+          id?: string
+          name: string
+          order_id?: string | null
+          size?: number
+          type?: string | null
+          uploaded_at?: string
+          url: string
+          user_id: string
+        }
+        Update: {
+          folder_id?: string | null
+          id?: string
+          name?: string
+          order_id?: string | null
+          size?: number
+          type?: string | null
+          uploaded_at?: string
+          url?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "files_folder_id_fkey"
+            columns: ["folder_id"]
+            isOneToOne: false
+            referencedRelation: "folders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "files_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      folders: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           created_at: string
@@ -258,8 +330,11 @@ export type Database = {
           delivery_method: string
           discount: number
           id: string
+          location_lat: number | null
+          location_lng: number | null
           notes: string | null
           order_number: string
+          order_type: string
           paid: boolean
           paper_size: string
           paper_type: string
@@ -290,8 +365,11 @@ export type Database = {
           delivery_method?: string
           discount?: number
           id?: string
+          location_lat?: number | null
+          location_lng?: number | null
           notes?: string | null
           order_number?: string
+          order_type?: string
           paid?: boolean
           paper_size: string
           paper_type: string
@@ -322,8 +400,11 @@ export type Database = {
           delivery_method?: string
           discount?: number
           id?: string
+          location_lat?: number | null
+          location_lng?: number | null
           notes?: string | null
           order_number?: string
+          order_type?: string
           paid?: boolean
           paper_size?: string
           paper_type?: string
@@ -359,6 +440,7 @@ export type Database = {
           pages_printed: number
           printed_at: string
           printer_id: string | null
+          printer_name: string | null
           status: string
         }
         Insert: {
@@ -369,6 +451,7 @@ export type Database = {
           pages_printed?: number
           printed_at?: string
           printer_id?: string | null
+          printer_name?: string | null
           status?: string
         }
         Update: {
@@ -379,6 +462,7 @@ export type Database = {
           pages_printed?: number
           printed_at?: string
           printer_id?: string | null
+          printer_name?: string | null
           status?: string
         }
         Relationships: [
