@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/auth")({
@@ -30,6 +29,7 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
 
   useEffect(() => {
     if (!loading && user) navigate({ to: "/dashboard", replace: true });
@@ -51,7 +51,7 @@ function AuthPage() {
   async function signUp(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -59,6 +59,14 @@ function AuthPage() {
         data: { full_name: fullName },
       },
     });
+    if (!error && data.user) {
+      await supabase.from("profiles").upsert({
+        id: data.user.id,
+        email,
+        full_name: fullName,
+        phone,
+      });
+    }
     setBusy(false);
     if (error) {
       toast.error(error.message);
@@ -68,16 +76,16 @@ function AuthPage() {
     navigate({ to: "/dashboard" });
   }
 
-  async function google() {
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
-    });
-    if (result.error) {
-      toast.error("Google sign-in failed. Please try again.");
+  async function forgotPassword() {
+    if (!email.trim()) {
+      toast.error("Enter your email first");
       return;
     }
-    if (result.redirected) return;
-    navigate({ to: "/dashboard" });
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
+      redirectTo: `${window.location.origin}/auth`,
+    });
+    if (error) toast.error(error.message);
+    else toast.success("Password reset link sent — check your email");
   }
 
   return (
@@ -108,11 +116,21 @@ function AuthPage() {
                   {busy && <Loader2 className="animate-spin" />} Sign in
                 </Button>
               </form>
+              <div className="mt-4 text-center">
+                <button
+                  type="button"
+                  onClick={forgotPassword}
+                  className="text-primary hover:underline text-sm"
+                >
+                  Forgot password?
+                </button>
+              </div>
             </TabsContent>
 
             <TabsContent value="signup">
               <form onSubmit={signUp} className="space-y-4">
                 <Field id="su-name" label="Full name" value={fullName} onChange={setFullName} />
+                <Field id="su-phone" label="Phone number" type="tel" value={phone} onChange={setPhone} />
                 <Field id="su-email" label="Email" type="email" value={email} onChange={setEmail} />
                 <Field
                   id="su-pass"
@@ -127,14 +145,6 @@ function AuthPage() {
               </form>
             </TabsContent>
           </Tabs>
-
-          <div className="text-muted-foreground my-5 flex items-center gap-3 text-xs">
-            <span className="bg-border h-px flex-1" /> or <span className="bg-border h-px flex-1" />
-          </div>
-
-          <Button variant="outline" size="lg" className="w-full" onClick={google}>
-            Continue with Google
-          </Button>
         </div>
       </div>
     </main>

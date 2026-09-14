@@ -6,22 +6,22 @@ export const PAPER_SIZES: OptionDef[] = [
   { value: "A2", label: "A2", hint: "420 × 594 mm", multiplier: 3.2 },
   { value: "A1", label: "A1", hint: "594 × 841 mm", multiplier: 5.5 },
   { value: "A0", label: "A0", hint: "841 × 1189 mm", multiplier: 9 },
-  { value: "custom", label: "Custom", hint: "Enter dimensions", multiplier: 1 },
+  { value: "custom", label: "Custom size", hint: "Enter dimensions", multiplier: 1 },
 ];
 
 export const PAPER_TYPES: OptionDef[] = [
-  { value: "glossy", label: "Glossy", multiplier: 1.15 },
-  { value: "matte", label: "Matte", multiplier: 1 },
-  { value: "premium-matte", label: "Premium Matte", multiplier: 1.4 },
-  { value: "recycled", label: "Recycled", hint: "Lowest carbon footprint", multiplier: 0.9 },
+  { value: "glossy", label: "Glossy paper", multiplier: 1.15 },
+  { value: "matte", label: "Matte paper", multiplier: 1 },
+  { value: "premium-matte", label: "Premium matte", multiplier: 1.4 },
+  { value: "recycled", label: "Recycled paper", hint: "Lowest carbon footprint", multiplier: 0.9 },
   { value: "vinyl", label: "Vinyl", multiplier: 2.1 },
   { value: "canvas", label: "Canvas", multiplier: 2.8 },
 ];
 
 export const COLOR_MODES: OptionDef[] = [
-  { value: "full-color", label: "Full Color", multiplier: 1.6 },
+  { value: "full-color", label: "Full color", multiplier: 1.6 },
   { value: "grayscale", label: "Grayscale", multiplier: 1.15 },
-  { value: "bw", label: "Black & White", multiplier: 1 },
+  { value: "bw", label: "Black & white", multiplier: 1 },
 ];
 
 export const SIDES: OptionDef[] = [
@@ -30,25 +30,32 @@ export const SIDES: OptionDef[] = [
 ];
 
 export const BINDINGS: OptionDef[] = [
-  { value: "none", label: "None", multiplier: 0 },
+  { value: "none", label: "No binding", multiplier: 0 },
   { value: "stapled", label: "Stapled", multiplier: 0.5 },
-  { value: "spiral", label: "Spiral", multiplier: 2 },
-  { value: "perfect", label: "Perfect Bound", multiplier: 6 },
+  { value: "spiral", label: "Spiral bound", multiplier: 2 },
+  { value: "perfect", label: "Perfect bound", multiplier: 6 },
   { value: "laminated", label: "Laminated", multiplier: 3 },
 ];
 
 export const TURNAROUNDS: OptionDef[] = [
-  { value: "standard", label: "Standard", hint: "3–5 days", multiplier: 1 },
-  { value: "express", label: "Express", hint: "24 hours", multiplier: 1.35 },
-  { value: "rush", label: "Rush", hint: "4 hours", multiplier: 1.8 },
+  { value: "same-day", label: "Same-day", hint: "Collect today", multiplier: 1.4 },
+  { value: "1-day", label: "1-day", hint: "Collect tomorrow", multiplier: 1.2 },
+  { value: "2-day", label: "2-day", hint: "Collect in two days", multiplier: 1 },
 ];
 
 export const ADDONS: OptionDef[] = [
   { value: "lamination", label: "Lamination", multiplier: 1.2 },
   { value: "mounting", label: "Mounting", multiplier: 3.5 },
   { value: "framing", label: "Framing", multiplier: 12 },
-  { value: "uv-coating", label: "UV Coating", multiplier: 1.8 },
+  { value: "uv-coating", label: "UV coating", multiplier: 1.8 },
 ];
+
+export const ORDER_TYPES = [
+  { value: "print", label: "Print order" },
+  { value: "passport", label: "Passport photo" },
+] as const;
+
+export type OrderType = (typeof ORDER_TYPES)[number]["value"];
 
 export const ECO_SCORE: Record<string, string> = {
   recycled: "A – lowest footprint",
@@ -81,7 +88,7 @@ export const DEFAULT_SPECS: Specs = {
   sides: "single",
   binding: "none",
   quantity: 50,
-  turnaround: "standard",
+  turnaround: "2-day",
   addons: [],
 };
 
