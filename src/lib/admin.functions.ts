@@ -143,3 +143,24 @@ export const setUserRole = createServerFn({ method: "POST" })
     }
     return { ok: true };
   });
+
+export const cleanOldStorage = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: oldFiles, error } = await supabaseAdmin
+      .from("files")
+      .select("id, url")
+      .lt("uploaded_at", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
+    if (error) throw new Error(error.message);
+
+    const paths = (oldFiles ?? []).map((f: any) => f.url).filter(Boolean);
+    if (paths.length) {
+      const { error: storageError } = await supabaseAdmin.storage.from("print-files").remove(paths);
+      if (storageError) throw new Error(storageError.message);
+      const { error: delError } = await supabaseAdmin.from("files").delete().in("id", oldFiles!.map((f: any) => f.id));
+      if (delError) throw new Error(delError.message);
+    }
+    return { removed: paths.length };
+  });
