@@ -17,6 +17,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedDocumentsRouteImport } from './routes/_authenticated/documents'
 import { Route as AuthenticatedEditorRouteImport } from './routes/_authenticated/editor'
 import { Route as AuthenticatedOrderRouteImport } from './routes/_authenticated/order'
+import { Route as AuthenticatedPassportRouteImport } from './routes/_authenticated/passport'
 import { Route as AuthenticatedPrintersRouteImport } from './routes/_authenticated/printers'
 import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
@@ -60,6 +61,11 @@ const AuthenticatedOrderRoute = AuthenticatedOrderRouteImport.update({
   path: '/order',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPassportRoute = AuthenticatedPassportRouteImport.update({
+  id: '/passport',
+  path: '/passport',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedPrintersRoute = AuthenticatedPrintersRouteImport.update({
   id: '/printers',
   path: '/printers',
@@ -84,6 +90,7 @@ export interface FileRoutesByFullPath {
   '/documents': typeof AuthenticatedDocumentsRoute
   '/editor': typeof AuthenticatedEditorRoute
   '/order': typeof AuthenticatedOrderRoute
+  '/passport': typeof AuthenticatedPassportRoute
   '/printers': typeof AuthenticatedPrintersRoute
   '/users': typeof AuthenticatedUsersRoute
   '/admin/login': typeof AdminLoginRoute
@@ -96,6 +103,7 @@ export interface FileRoutesByTo {
   '/documents': typeof AuthenticatedDocumentsRoute
   '/editor': typeof AuthenticatedEditorRoute
   '/order': typeof AuthenticatedOrderRoute
+  '/passport': typeof AuthenticatedPassportRoute
   '/printers': typeof AuthenticatedPrintersRoute
   '/users': typeof AuthenticatedUsersRoute
   '/admin/login': typeof AdminLoginRoute
@@ -110,6 +118,7 @@ export interface FileRoutesById {
   '/_authenticated/documents': typeof AuthenticatedDocumentsRoute
   '/_authenticated/editor': typeof AuthenticatedEditorRoute
   '/_authenticated/order': typeof AuthenticatedOrderRoute
+  '/_authenticated/passport': typeof AuthenticatedPassportRoute
   '/_authenticated/printers': typeof AuthenticatedPrintersRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
   '/admin/login': typeof AdminLoginRoute
@@ -124,6 +133,7 @@ export interface FileRouteTypes {
     | '/documents'
     | '/editor'
     | '/order'
+    | '/passport'
     | '/printers'
     | '/users'
     | '/admin/login'
@@ -136,6 +146,7 @@ export interface FileRouteTypes {
     | '/documents'
     | '/editor'
     | '/order'
+    | '/passport'
     | '/printers'
     | '/users'
     | '/admin/login'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '/_authenticated/documents'
     | '/_authenticated/editor'
     | '/_authenticated/order'
+    | '/_authenticated/passport'
     | '/_authenticated/printers'
     | '/_authenticated/users'
     | '/admin/login'
@@ -219,6 +231,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOrderRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/passport': {
+      id: '/_authenticated/passport'
+      path: '/passport'
+      fullPath: '/passport'
+      preLoaderRoute: typeof AuthenticatedPassportRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/printers': {
       id: '/_authenticated/printers'
       path: '/printers'
@@ -249,6 +268,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDocumentsRoute: typeof AuthenticatedDocumentsRoute
   AuthenticatedEditorRoute: typeof AuthenticatedEditorRoute
   AuthenticatedOrderRoute: typeof AuthenticatedOrderRoute
+  AuthenticatedPassportRoute: typeof AuthenticatedPassportRoute
   AuthenticatedPrintersRoute: typeof AuthenticatedPrintersRoute
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
 }
@@ -259,6 +279,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDocumentsRoute: AuthenticatedDocumentsRoute,
   AuthenticatedEditorRoute: AuthenticatedEditorRoute,
   AuthenticatedOrderRoute: AuthenticatedOrderRoute,
+  AuthenticatedPassportRoute: AuthenticatedPassportRoute,
   AuthenticatedPrintersRoute: AuthenticatedPrintersRoute,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,
 }
