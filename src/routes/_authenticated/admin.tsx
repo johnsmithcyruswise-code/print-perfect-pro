@@ -46,7 +46,8 @@ import {
 import { BrandLogo } from "@/components/brand-logo";
 import { supabase } from "@/integrations/supabase/client";
 import { useRoles } from "@/hooks/use-role";
-import { STATUS_FLOW, STATUS_LABEL, STORE, money, cleanOldStorage } from "@/lib/pricing";
+import { STATUS_FLOW, STATUS_LABEL, STORE, money } from "@/lib/pricing";
+import { cleanOldStorage } from "@/lib/admin.functions";
 import type { Database } from "@/integrations/supabase/types";
 
 export const Route = createFileRoute("/_authenticated/admin")({
