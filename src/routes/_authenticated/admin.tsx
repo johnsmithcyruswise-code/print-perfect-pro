@@ -658,12 +658,12 @@ function OrderSheet({ order, onClose }: { order: Order | null; onClose: () => vo
   const update = useMutation({
     mutationFn: async (patch: Record<string, unknown>) => {
       if (!order) throw new Error("No order");
-      const { error } = await supabase.from("orders").update(patch).eq("id", order.id);
+      const { error } = await supabase.from("orders").update(patch as any).eq("id", order.id);
       if (error) throw error;
-      if (patch.status) {
+      if (patch["status"]) {
         await supabase.from("order_events").insert({
           order_id: order.id,
-          status: patch.status,
+          status: patch["status"],
           note: "Updated by staff",
         });
       }
