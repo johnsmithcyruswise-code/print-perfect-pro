@@ -49,6 +49,11 @@ function AdminLogin() {
       }
     }
 
+    if (!error) {
+      // Ensure the owner profile exists and is granted the admin role.
+      await syncMyProfile({ data: {} }).catch(() => null);
+    }
+
     setBusy(false);
     if (error) {
       toast.error(error.message);
