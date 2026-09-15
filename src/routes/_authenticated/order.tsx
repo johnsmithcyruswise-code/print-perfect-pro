@@ -268,6 +268,7 @@ function OrderPage() {
                   <div className="grid gap-3 sm:grid-cols-2">
                     <Link
                       to="/editor"
+                      search={{ id: "" }}
                       className="border-border bg-card hover:border-primary/40 hover:bg-accent flex items-center gap-3 rounded-xl border p-4 transition-colors"
                     >
                       <span className="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-lg">
@@ -280,7 +281,7 @@ function OrderPage() {
                       <ArrowRight className="text-muted-foreground ml-auto size-4" />
                     </Link>
                     <Link
-                      to="/documents?scan=1"
+                      to="/documents"
                       className="border-border bg-card hover:border-primary/40 hover:bg-accent flex items-center gap-3 rounded-xl border p-4 transition-colors"
                     >
                       <span className="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-lg">

@@ -656,7 +656,7 @@ function OrderSheet({ order, onClose }: { order: Order | null; onClose: () => vo
   });
 
   const update = useMutation({
-    mutationFn: async (patch: Partial<Order>) => {
+    mutationFn: async (patch: Record<string, unknown>) => {
       if (!order) throw new Error("No order");
       const { error } = await supabase.from("orders").update(patch).eq("id", order.id);
       if (error) throw error;
@@ -802,7 +802,7 @@ function StatusBadge({ status }: { status: string }) {
     cancelled: "bg-red-100 text-red-800",
   };
   return (
-    <span className={`text-[10px] font-semibold px-2 py-1 rounded-full ${variants[status] ?? variants.pending}`}>
+    <span className={`text-[10px] font-semibold px-2 py-1 rounded-full ${variants[status] ?? variants["pending"]}`}>
       {STATUS_LABEL[status] ?? status}
     </span>
   );

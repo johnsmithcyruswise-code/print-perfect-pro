@@ -39,8 +39,8 @@ function PassportPage() {
 
   function addFile(list: FileList | null) {
     if (!list || list.length === 0) return;
-    const f = list[0];
-    if (!f.type.startsWith("image/")) {
+    const f = list.item(0);
+    if (!f || !f.type.startsWith("image/")) {
       toast.error("Please upload an image file.");
       return;
     }
