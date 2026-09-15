@@ -15,6 +15,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { WhatsAppFab } from "@/components/whatsapp-fab";
 import { InstallBanner } from "@/components/install-app";
+import { registerServiceWorker } from "@/lib/pwa";
 
 function NotFoundComponent() {
   return (
@@ -141,6 +142,7 @@ function RootComponent() {
       router.invalidate();
       if (event !== "SIGNED_OUT") queryClient.invalidateQueries();
     });
+    registerServiceWorker().catch(() => {});
     return () => sub.subscription.unsubscribe();
   }, [router, queryClient]);
 
