@@ -663,7 +663,7 @@ function OrderSheet({ order, onClose }: { order: Order | null; onClose: () => vo
       if (patch["status"]) {
         await supabase.from("order_events").insert({
           order_id: order.id,
-          status: patch["status"],
+          status: patch["status"] as OrderStatus,
           note: "Updated by staff",
         });
       }
