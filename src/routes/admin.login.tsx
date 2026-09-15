@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
+import { syncMyProfile } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/admin/login")({
   ssr: false,
@@ -46,6 +47,11 @@ function AdminLogin() {
       if (!signUpError) {
         ({ error } = await supabase.auth.signInWithPassword(creds));
       }
+    }
+
+    if (!error) {
+      // Ensure the owner profile exists and is granted the admin role.
+      await syncMyProfile({ data: {} }).catch(() => null);
     }
 
     setBusy(false);

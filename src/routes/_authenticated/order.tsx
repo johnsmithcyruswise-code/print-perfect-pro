@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import {
   UploadCloud,
   FileText,
+  ScanLine,
+  PenLine,
   X,
   Check,
   Loader2,
@@ -29,6 +31,7 @@ import {
   COLOR_MODES,
   DEFAULT_SPECS,
   ECO_SCORE,
+  ORDER_TYPES,
   PAPER_SIZES,
   PAPER_TYPES,
   SIDES,
@@ -58,12 +61,13 @@ export const Route = createFileRoute("/_authenticated/order")({
 
 const MAX_BYTES = 50 * 1024 * 1024;
 const ACCEPTED = [".pdf", ".png", ".jpg", ".jpeg", ".ai", ".psd", ".docx", ".xlsx", ".pptx", ".zip"];
-const STEPS = ["Upload", "Print specs", "Confirmation"];
+const STEPS = ["Choose source", "Print specs", "Confirmation"];
 
 function OrderPage() {
   const { user } = useAuth();
   const inputRef = useRef<HTMLInputElement>(null);
   const [step, setStep] = useState(0);
+  const [orderType, setOrderType] = useState<string>("print");
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<Record<string, string>>({});
   const [specs, setSpecs] = useState<Specs>({ ...DEFAULT_SPECS, quantity: 1 });
@@ -91,7 +95,10 @@ function OrderPage() {
         setPreviews((p) => ({ ...p, [f.name]: URL.createObjectURL(f) }));
       }
     }
-    if (accepted.length) setFiles((prev) => [...prev, ...accepted]);
+    if (accepted.length) {
+      setFiles((prev) => [...prev, ...accepted]);
+      setStep(1);
+    }
   }
 
   async function submit() {
@@ -99,10 +106,20 @@ function OrderPage() {
     setSubmitting(true);
     setProgress(10);
     try {
+      let location: GeolocationPosition | null = null;
+      try {
+        location = await new Promise<GeolocationPosition>((resolve, reject) =>
+          navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 8000 })
+        );
+      } catch {
+        // location is optional
+      }
+
       const { data: order, error } = await supabase
         .from("orders")
         .insert({
           user_id: user.id,
+          order_type: orderType,
           paper_size: specs.paperSize,
           custom_width_mm: specs.customWidth ?? null,
           custom_height_mm: specs.customHeight ?? null,
@@ -116,6 +133,8 @@ function OrderPage() {
           notes: notes || null,
           customer_notes: notes || null,
           delivery_method: "pickup",
+          location_lat: location?.coords.latitude ?? null,
+          location_lng: location?.coords.longitude ?? null,
         })
         .select()
         .single();
@@ -134,12 +153,13 @@ function OrderPage() {
           size_bytes: file.size,
           content_type: file.type || null,
         });
-        await supabase.from("recent_files").insert({
+        await supabase.from("files").insert({
           user_id: user.id,
-          file_name: file.name,
-          file_path: path,
-          file_size: file.size,
-          file_type: file.type || null,
+          order_id: order.id,
+          name: file.name,
+          url: path,
+          size: file.size,
+          type: file.type || null,
         });
         done += 1;
         setProgress(10 + Math.round((done / Math.max(1, files.length)) * 80));
@@ -199,32 +219,96 @@ function OrderPage() {
           className="glass-card mt-8 rounded-3xl p-6"
         >
           {step === 0 && (
-            <div>
-              <div
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  addFiles(e.dataTransfer.files);
-                }}
-                onClick={() => inputRef.current?.click()}
-                className="border-primary/30 bg-primary/5 hover:bg-primary/10 flex cursor-pointer flex-col items-center gap-3 rounded-2xl border-2 border-dashed p-12 text-center transition-colors"
-              >
-                <UploadCloud className="text-primary size-10" />
-                <p className="font-semibold">Drag &amp; drop your files</p>
-                <p className="text-muted-foreground text-xs">
-                  PDF, PNG, JPG, AI, PSD, DOCX, XLSX, PPTX or ZIP · up to 50MB per file
-                </p>
-                <input
-                  ref={inputRef}
-                  type="file"
-                  multiple
-                  hidden
-                  accept={ACCEPTED.join(",")}
-                  onChange={(e) => addFiles(e.target.files)}
-                />
-              </div>
+            <div className="space-y-6">
+              <Group label="What are you ordering?">
+                <div className="flex flex-wrap gap-2">
+                  {ORDER_TYPES.map((t) => (
+                    <button
+                      key={t.value}
+                      onClick={() => setOrderType(t.value)}
+                      className={cn(
+                        "rounded-xl border px-4 py-2.5 text-left text-sm transition-colors",
+                        orderType === t.value
+                          ? "border-primary bg-primary/10 text-primary font-semibold"
+                          : "border-border bg-card hover:border-primary/40",
+                      )}
+                    >
+                      {t.label}
+                    </button>
+                  ))}
+                </div>
+              </Group>
 
-              <ul className="mt-6 space-y-3">
+              {orderType === "print" && (
+                <>
+                  <div
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      addFiles(e.dataTransfer.files);
+                    }}
+                    onClick={() => inputRef.current?.click()}
+                    className="border-primary/30 bg-primary/5 hover:bg-primary/10 flex cursor-pointer flex-col items-center gap-3 rounded-2xl border-2 border-dashed p-12 text-center transition-colors"
+                  >
+                    <UploadCloud className="text-primary size-10" />
+                    <p className="font-semibold">Drag &amp; drop your files</p>
+                    <p className="text-muted-foreground text-xs">
+                      PDF, PNG, JPG, AI, PSD, DOCX, XLSX, PPTX or ZIP · up to 50MB per file
+                    </p>
+                    <input
+                      ref={inputRef}
+                      type="file"
+                      multiple
+                      hidden
+                      accept={ACCEPTED.join(",")}
+                      onChange={(e) => addFiles(e.target.files)}
+                    />
+                  </div>
+
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <Link
+                      to="/editor"
+                      search={{ id: "" }}
+                      className="border-border bg-card hover:border-primary/40 hover:bg-accent flex items-center gap-3 rounded-xl border p-4 transition-colors"
+                    >
+                      <span className="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-lg">
+                        <PenLine className="size-5" />
+                      </span>
+                      <div className="text-left">
+                        <p className="font-semibold text-sm">Create a document</p>
+                        <p className="text-muted-foreground text-xs">Use our editor to type and print.</p>
+                      </div>
+                      <ArrowRight className="text-muted-foreground ml-auto size-4" />
+                    </Link>
+                    <Link
+                      to="/documents"
+                      className="border-border bg-card hover:border-primary/40 hover:bg-accent flex items-center gap-3 rounded-xl border p-4 transition-colors"
+                    >
+                      <span className="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-lg">
+                        <ScanLine className="size-5" />
+                      </span>
+                      <div className="text-left">
+                        <p className="font-semibold text-sm">Scan with OCR</p>
+                        <p className="text-muted-foreground text-xs">Upload a photo to convert to text.</p>
+                      </div>
+                      <ArrowRight className="text-muted-foreground ml-auto size-4" />
+                    </Link>
+                  </div>
+                </>
+              )}
+
+              {orderType === "passport" && (
+                <div className="text-center py-10">
+                  <p className="text-muted-foreground mb-4">
+                    Passport photos have their own upload and preview flow.
+                  </p>
+                  <Button variant="hero" size="lg" asChild>
+                    <Link to="/passport">Go to passport order</Link>
+                  </Button>
+                </div>
+              )}
+
+              <ul className="space-y-3">
                 {files.map((f, i) => (
                   <li
                     key={`${f.name}-${i}`}
@@ -394,7 +478,7 @@ function OrderPage() {
               </div>
               <div className="bg-secondary mx-auto w-fit rounded-2xl px-8 py-5">
                 <p className="text-muted-foreground text-[11px] font-semibold tracking-widest uppercase">
-                  Tracking number
+                  Order number
                 </p>
                 <p className="font-mono text-2xl font-extrabold">{tracking}</p>
               </div>
@@ -412,7 +496,7 @@ function OrderPage() {
             </div>
           )}
 
-          {step < 2 && (
+          {step < 2 && orderType === "print" && (
             <div className="mt-8 flex justify-between gap-3">
               <Button
                 variant="ghost"
