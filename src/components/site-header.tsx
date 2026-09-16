@@ -59,6 +59,7 @@ export function SiteHeader() {
               <Button asChild variant="hero" size="sm">
                 <Link to="/order">Start an order</Link>
               </Button>
+              <NotificationBell />
               <Button asChild variant="ghost" size="icon" aria-label="Settings">
                 <Link to="/settings">
                   <Settings />
@@ -67,6 +68,7 @@ export function SiteHeader() {
               <Button variant="ghost" size="icon" onClick={signOut} aria-label="Sign out">
                 <LogOut />
               </Button>
+
             </>
           ) : (
             <>
