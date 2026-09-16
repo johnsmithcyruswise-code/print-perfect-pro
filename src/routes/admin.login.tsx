@@ -52,7 +52,10 @@ function AdminLogin() {
     if (!error) {
       // Ensure the owner profile exists and is granted the admin role.
       await syncMyProfile({ data: {} }).catch(() => null);
+      // Auto-clean stale uploads and storage objects older than 7 days.
+      await cleanOldStorage({ data: {} }).catch(() => null);
     }
+
 
     setBusy(false);
     if (error) {
