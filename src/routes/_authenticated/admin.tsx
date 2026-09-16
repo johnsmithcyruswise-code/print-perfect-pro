@@ -8,6 +8,7 @@ import {
   ImageIcon,
   FolderOpen,
   Printer as PrinterIcon,
+  Printer,
   Settings,
   LogOut,
   ShieldAlert,
