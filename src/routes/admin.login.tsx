@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
-import { syncMyProfile } from "@/lib/admin.functions";
+import { syncMyProfile, cleanOldStorage } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/admin/login")({
   ssr: false,
@@ -52,7 +52,11 @@ function AdminLogin() {
     if (!error) {
       // Ensure the owner profile exists and is granted the admin role.
       await syncMyProfile({ data: {} }).catch(() => null);
+      // Auto-clean stale uploads and storage objects older than 7 days.
+      await cleanOldStorage({ data: undefined as never }).catch(() => null);
+
     }
+
 
     setBusy(false);
     if (error) {

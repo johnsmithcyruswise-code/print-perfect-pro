@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { useRoles } from "@/hooks/use-role";
 import { supabase } from "@/integrations/supabase/client";
+import { NotificationBell } from "@/components/notification-bell";
+
 
 export function SiteHeader() {
   const { user, loading } = useAuth();
@@ -57,6 +59,7 @@ export function SiteHeader() {
               <Button asChild variant="hero" size="sm">
                 <Link to="/order">Start an order</Link>
               </Button>
+              <NotificationBell />
               <Button asChild variant="ghost" size="icon" aria-label="Settings">
                 <Link to="/settings">
                   <Settings />
@@ -65,6 +68,7 @@ export function SiteHeader() {
               <Button variant="ghost" size="icon" onClick={signOut} aria-label="Sign out">
                 <LogOut />
               </Button>
+
             </>
           ) : (
             <>
