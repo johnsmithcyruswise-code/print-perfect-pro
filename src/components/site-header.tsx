@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { useRoles } from "@/hooks/use-role";
 import { supabase } from "@/integrations/supabase/client";
+import { NotificationBell } from "@/components/notification-bell";
+
 
 export function SiteHeader() {
   const { user, loading } = useAuth();
