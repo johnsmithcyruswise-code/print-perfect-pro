@@ -8,6 +8,7 @@ import {
   ImageIcon,
   FolderOpen,
   Printer as PrinterIcon,
+  Printer,
   Settings,
   LogOut,
   ShieldAlert,
@@ -45,9 +46,11 @@ import {
 } from "@/components/ui/select";
 import { BrandLogo } from "@/components/brand-logo";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
 import { useRoles } from "@/hooks/use-role";
 import { STATUS_FLOW, STATUS_LABEL, STORE, money } from "@/lib/pricing";
 import { cleanOldStorage } from "@/lib/admin.functions";
+import { printOrderTicket } from "@/lib/qz-print";
 import type { Database } from "@/integrations/supabase/types";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -661,11 +664,21 @@ function OrderSheet({ order, onClose }: { order: Order | null; onClose: () => vo
       const { error } = await supabase.from("orders").update(patch as any).eq("id", order.id);
       if (error) throw error;
       if (patch["status"]) {
+        const status = patch["status"] as OrderStatus;
         await supabase.from("order_events").insert({
           order_id: order.id,
-          status: patch["status"] as OrderStatus,
+          status,
           note: "Updated by staff",
         });
+        if (status === "ready") {
+          await supabase.from("notifications").insert({
+            user_id: order.user_id,
+            order_id: order.id,
+            type: "app",
+            subject: "Your order is ready for collection",
+            message: `Order ${order.order_number} is ready. Come by the store during opening hours.`,
+          });
+        }
       }
     },
     onSuccess: () => {
@@ -770,6 +783,8 @@ function OrderSheet({ order, onClose }: { order: Order | null; onClose: () => vo
             <Save /> Save changes
           </Button>
 
+          <PrintTicketButton order={order} />
+
           <div>
             <p className="mb-2 text-xs font-bold tracking-wide uppercase">Move to</p>
             <div className="flex flex-wrap gap-2">
@@ -789,6 +804,29 @@ function OrderSheet({ order, onClose }: { order: Order | null; onClose: () => vo
         </div>
       </SheetContent>
     </Sheet>
+  );
+}
+
+function PrintTicketButton({ order }: { order: Order }) {
+  const { user } = useAuth();
+  const [busy, setBusy] = useState(false);
+  if (!user) return null;
+  return (
+    <Button
+      variant="soft"
+      className="w-full"
+      disabled={busy}
+      onClick={async () => {
+        setBusy(true);
+        const result = await printOrderTicket(order, user.id);
+        setBusy(false);
+        if (result.ok) toast.success(result.message);
+        else toast.error(result.message);
+      }}
+    >
+      <Printer className="size-4" />
+      {busy ? "Connecting to printer…" : "Print ticket"}
+    </Button>
   );
 }
 
