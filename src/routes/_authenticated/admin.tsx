@@ -664,11 +664,21 @@ function OrderSheet({ order, onClose }: { order: Order | null; onClose: () => vo
       const { error } = await supabase.from("orders").update(patch as any).eq("id", order.id);
       if (error) throw error;
       if (patch["status"]) {
+        const status = patch["status"] as OrderStatus;
         await supabase.from("order_events").insert({
           order_id: order.id,
-          status: patch["status"] as OrderStatus,
+          status,
           note: "Updated by staff",
         });
+        if (status === "ready") {
+          await supabase.from("notifications").insert({
+            user_id: order.user_id,
+            order_id: order.id,
+            type: "app",
+            subject: "Your order is ready for collection",
+            message: `Order ${order.order_number} is ready. Come by the store during opening hours.`,
+          });
+        }
       }
     },
     onSuccess: () => {
