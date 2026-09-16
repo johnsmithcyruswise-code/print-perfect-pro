@@ -133,12 +133,22 @@ function AdminPage() {
 
   // Realtime notifications for new orders
   useEffect(() => {
+    const playPing = () => {
+      try {
+        const audio = new Audio(
+          "data:audio/wav;base64,UklGRl9vT1BXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU" + "A".repeat(64)
+        );
+        audio.volume = 0.4;
+        void audio.play();
+      } catch {}
+    };
     const channel = supabase
       .channel("admin-orders")
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "orders" },
         (payload) => {
+          playPing();
           toast.info(`New order received: ${(payload.new as any).order_number}`, {
             icon: <Bell className="size-4" />,
           });
@@ -150,6 +160,7 @@ function AdminPage() {
       supabase.removeChannel(channel);
     };
   }, [queryClient]);
+
 
   if (!loading && !isStaff) {
     return (
