@@ -45,9 +45,11 @@ import {
 } from "@/components/ui/select";
 import { BrandLogo } from "@/components/brand-logo";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/use-auth";
 import { useRoles } from "@/hooks/use-role";
 import { STATUS_FLOW, STATUS_LABEL, STORE, money } from "@/lib/pricing";
 import { cleanOldStorage } from "@/lib/admin.functions";
+import { printOrderTicket } from "@/lib/qz-print";
 import type { Database } from "@/integrations/supabase/types";
 
 export const Route = createFileRoute("/_authenticated/admin")({
