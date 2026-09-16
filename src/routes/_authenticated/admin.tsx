@@ -807,6 +807,29 @@ function OrderSheet({ order, onClose }: { order: Order | null; onClose: () => vo
   );
 }
 
+function PrintTicketButton({ order }: { order: Order }) {
+  const { user } = useAuth();
+  const [busy, setBusy] = useState(false);
+  if (!user) return null;
+  return (
+    <Button
+      variant="soft"
+      className="w-full"
+      disabled={busy}
+      onClick={async () => {
+        setBusy(true);
+        const result = await printOrderTicket(order, user.id);
+        setBusy(false);
+        if (result.ok) toast.success(result.message);
+        else toast.error(result.message);
+      }}
+    >
+      <Printer className="size-4" />
+      {busy ? "Connecting to printer…" : "Print ticket"}
+    </Button>
+  );
+}
+
 function StatusBadge({ status }: { status: string }) {
   const variants: Record<string, string> = {
     pending: "bg-yellow-100 text-yellow-800",
