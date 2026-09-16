@@ -1,20 +1,34 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { Database } from "@/integrations/supabase/types";
 
-type Order = Database["public"]["Tables"]["orders"]["Row"];
+export type OrderTicket = {
+  id: string;
+  order_number: string;
+  user_id: string;
+  status: string;
+  order_type: string;
+  quantity: number;
+  paper_size: string;
+  paper_type: string;
+  color_mode: string;
+  sides: string;
+  binding: string;
+  turnaround: string;
+  staff_price?: number | null;
+  staff_notes?: string | null;
+};
 
-let qzModule: typeof import("qz-tray") | null = null;
+let qzModule: any = null;
 let qzConnected = false;
 
 export function isQZAvailable() {
   return typeof window !== "undefined";
 }
 
-async function getQz(): Promise<typeof import("qz-tray")> {
+async function getQz(): Promise<any> {
   if (qzModule) return qzModule;
-  const mod = await import("qz-tray");
-  qzModule = mod;
-  return mod;
+  const mod: any = await import("qz-tray");
+  qzModule = mod.default ?? mod;
+  return qzModule;
 }
 
 export async function ensureQZConnected(): Promise<boolean> {
@@ -50,7 +64,7 @@ export async function findDefaultPrinter(): Promise<string | null> {
   }
 }
 
-function orderTicketHtml(order: Order): string {
+function orderTicketHtml(order: OrderTicket): string {
   const lines = [
     "<h2>Planned Kid Computer Services — Order Ticket</h2>",
     `<p><strong>Order #:</strong> ${order.order_number}</p>`,
@@ -62,40 +76,41 @@ function orderTicketHtml(order: Order): string {
     `<p><strong>Sides:</strong> ${order.sides}</p>`,
     `<p><strong>Binding:</strong> ${order.binding}</p>`,
     `<p><strong>Turnaround:</strong> ${order.turnaround}</p>`,
-    order.staff_price ? `<p><strong>Quote:</strong> UGX ${order.staff_price}</p>` : "",
+    order.staff_price ? `<p><strong>Quote:</strong> KES ${order.staff_price}</p>` : "",
     order.staff_notes ? `<p><strong>Notes:</strong> ${order.staff_notes}</p>` : "",
     `<p style="font-size:10px;color:#666">Printed ${new Date().toLocaleString()}</p>`,
   ];
   return `<div style="font-family:sans-serif;padding:16px;max-width:400px">${lines.join("")}</div>`;
 }
 
-export async function printOrderTicket(order: Order, operatorId: string): Promise<{ ok: boolean; fallback: boolean; message: string }> {
-  const printerName = await findDefaultPrinter();
+export async function printOrderTicket(
+  order: OrderTicket,
+  operatorId: string,
+): Promise<{ ok: boolean; fallback: boolean; message: string }> {
+  if (!isQZAvailable()) return await fallbackPrint(order);
+
   const qz = await getQz();
+  let printerName: string | null = null;
+
   if (!qzConnected) {
     const ok = await ensureQZConnected();
-    if (!ok) {
-      return await fallbackPrint(order);
-    }
+    if (!ok) return await fallbackPrint(order);
   }
 
-  const printer = printerName || (await findDefaultPrinter());
-  const config = qz.configs.create(printer || undefined);
+  printerName = await findDefaultPrinter();
+  const config = qz.configs.create(printerName || undefined);
 
   try {
-    await qz.print(config, [
-      { type: "html", format: "plain", data: orderTicketHtml(order) },
-    ]);
-
-    await logPrint(order, operatorId, printer || "default", "success");
-    return { ok: true, fallback: false, message: `Sent to ${printer || "default printer"}` };
+    await qz.print(config, [{ type: "html", format: "plain", data: orderTicketHtml(order) }]);
+    await logPrint(order, operatorId, printerName || "default", "success");
+    return { ok: true, fallback: false, message: `Sent to ${printerName || "default printer"}` };
   } catch (err) {
-    await logPrint(order, operatorId, printer || "default", "failed", err instanceof Error ? err.message : String(err));
+    await logPrint(order, operatorId, printerName || "default", "failed");
     return await fallbackPrint(order);
   }
 }
 
-async function fallbackPrint(order: Order): Promise<{ ok: boolean; fallback: boolean; message: string }> {
+async function fallbackPrint(order: OrderTicket): Promise<{ ok: boolean; fallback: boolean; message: string }> {
   const html = `
     <html>
       <head><title>Order ${order.order_number}</title></head>
@@ -114,11 +129,10 @@ async function fallbackPrint(order: Order): Promise<{ ok: boolean; fallback: boo
 }
 
 async function logPrint(
-  order: Order,
+  order: OrderTicket,
   operatorId: string,
   printerName: string,
   status: "success" | "failed",
-  note?: string,
 ) {
   const { error } = await supabase.from("print_logs").insert({
     order_id: order.id,
@@ -126,7 +140,6 @@ async function logPrint(
     printer_name: printerName,
     status,
     pages_printed: 0,
-    note: note || undefined,
   });
   if (error) console.error("[print log]", error);
 }
