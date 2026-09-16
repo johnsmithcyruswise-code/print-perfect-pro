@@ -19,6 +19,7 @@ import { Route as AuthenticatedEditorRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedOrderRouteImport } from './routes/_authenticated/order'
 import { Route as AuthenticatedPassportRouteImport } from './routes/_authenticated/passport'
 import { Route as AuthenticatedPrintersRouteImport } from './routes/_authenticated/printers'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 
@@ -71,6 +72,11 @@ const AuthenticatedPrintersRoute = AuthenticatedPrintersRouteImport.update({
   path: '/printers',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedUsersRoute = AuthenticatedUsersRouteImport.update({
   id: '/users',
   path: '/users',
@@ -92,6 +98,7 @@ export interface FileRoutesByFullPath {
   '/order': typeof AuthenticatedOrderRoute
   '/passport': typeof AuthenticatedPassportRoute
   '/printers': typeof AuthenticatedPrintersRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/users': typeof AuthenticatedUsersRoute
   '/admin/login': typeof AdminLoginRoute
 }
@@ -105,6 +112,7 @@ export interface FileRoutesByTo {
   '/order': typeof AuthenticatedOrderRoute
   '/passport': typeof AuthenticatedPassportRoute
   '/printers': typeof AuthenticatedPrintersRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/users': typeof AuthenticatedUsersRoute
   '/admin/login': typeof AdminLoginRoute
 }
@@ -120,6 +128,7 @@ export interface FileRoutesById {
   '/_authenticated/order': typeof AuthenticatedOrderRoute
   '/_authenticated/passport': typeof AuthenticatedPassportRoute
   '/_authenticated/printers': typeof AuthenticatedPrintersRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
   '/admin/login': typeof AdminLoginRoute
 }
@@ -135,6 +144,7 @@ export interface FileRouteTypes {
     | '/order'
     | '/passport'
     | '/printers'
+    | '/settings'
     | '/users'
     | '/admin/login'
   fileRoutesByTo: FileRoutesByTo
@@ -148,6 +158,7 @@ export interface FileRouteTypes {
     | '/order'
     | '/passport'
     | '/printers'
+    | '/settings'
     | '/users'
     | '/admin/login'
   id:
@@ -162,6 +173,7 @@ export interface FileRouteTypes {
     | '/_authenticated/order'
     | '/_authenticated/passport'
     | '/_authenticated/printers'
+    | '/_authenticated/settings'
     | '/_authenticated/users'
     | '/admin/login'
   fileRoutesById: FileRoutesById
@@ -245,6 +257,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPrintersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/users': {
       id: '/_authenticated/users'
       path: '/users'
@@ -270,6 +289,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedOrderRoute: typeof AuthenticatedOrderRoute
   AuthenticatedPassportRoute: typeof AuthenticatedPassportRoute
   AuthenticatedPrintersRoute: typeof AuthenticatedPrintersRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
 }
 
@@ -281,6 +301,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedOrderRoute: AuthenticatedOrderRoute,
   AuthenticatedPassportRoute: AuthenticatedPassportRoute,
   AuthenticatedPrintersRoute: AuthenticatedPrintersRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,
 }
 
