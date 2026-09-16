@@ -783,6 +783,8 @@ function OrderSheet({ order, onClose }: { order: Order | null; onClose: () => vo
             <Save /> Save changes
           </Button>
 
+          <PrintTicketButton order={order} />
+
           <div>
             <p className="mb-2 text-xs font-bold tracking-wide uppercase">Move to</p>
             <div className="flex flex-wrap gap-2">
