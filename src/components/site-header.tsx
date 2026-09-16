@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { LogOut, LayoutDashboard, ShieldCheck, Users, FileText } from "lucide-react";
+import { LogOut, LayoutDashboard, ShieldCheck, Users, FileText, Settings } from "lucide-react";
 import { BrandLogo } from "@/components/brand-logo";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
