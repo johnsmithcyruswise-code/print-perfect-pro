@@ -15,6 +15,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { WhatsAppFab } from "@/components/whatsapp-fab";
 import { InstallBanner } from "@/components/install-app";
+import { registerAppServiceWorker } from "@/lib/register-sw";
 
 function NotFoundComponent() {
   return (
@@ -134,6 +135,10 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
+
+  useEffect(() => {
+    void registerAppServiceWorker();
+  }, []);
 
   useEffect(() => {
     const { data: sub } = supabase.auth.onAuthStateChange((event) => {
