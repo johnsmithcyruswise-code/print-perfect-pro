@@ -12,7 +12,7 @@ import { SiteHeader } from "@/components/site-header";
 import { LocationConsent } from "@/components/location-consent";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { STATUS_FLOW, STATUS_LABEL, money } from "@/lib/pricing";
+import { STATUS_FLOW, STATUS_LABEL } from "@/lib/pricing";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -116,7 +116,6 @@ function Dashboard() {
 
   const active = orders?.filter((o) => !["completed", "shipped", "cancelled"].includes(o.status)) ?? [];
   const done = orders?.filter((o) => ["completed", "shipped"].includes(o.status)) ?? [];
-  const spend = done.reduce((sum, o) => sum + Number(o.staff_price ?? 0), 0);
 
   return (
     <div className="min-h-screen">
