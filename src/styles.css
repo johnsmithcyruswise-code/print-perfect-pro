@@ -299,3 +299,8 @@
     min-height: 0;
   }
 }
+
+@keyframes splash-bar {
+  from { width: 0%; }
+  to { width: 100%; }
+}
