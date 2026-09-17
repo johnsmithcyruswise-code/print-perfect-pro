@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -13,6 +13,8 @@ import {
   Clock,
   ImageIcon,
   X,
+  PenLine,
+  FilePlus2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -65,6 +67,7 @@ export const Route = createFileRoute("/_authenticated/documents")({
 function VaultPage() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [selectedFolder, setSelectedFolder] = useState<string | "all">("all");
   const [dateSort, setDateSort] = useState<"newest" | "oldest">("newest");
@@ -179,6 +182,8 @@ function VaultPage() {
             </Button>
           </div>
         </div>
+
+        <DocumentsSection userId={user?.id} onOpen={(id) => navigate({ to: "/editor", search: { id } })} />
 
         <div className="mt-8 grid gap-6 lg:grid-cols-4">
           <aside className="space-y-4">
@@ -325,5 +330,108 @@ function NewFolder({ onCreate }: { onCreate: (name: string) => void }) {
         <X className="size-4" />
       </Button>
     </form>
+  );
+}
+
+
+type DocRow = {
+  id: string;
+  title: string;
+  word_count: number;
+  updated_at: string;
+};
+
+function DocumentsSection({
+  userId,
+  onOpen,
+}: {
+  userId: string | undefined;
+  onOpen: (id: string) => void;
+}) {
+  const queryClient = useQueryClient();
+
+  const { data: docs, isLoading } = useQuery({
+    queryKey: ["documents", userId],
+    enabled: !!userId,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("documents")
+        .select("id, title, word_count, updated_at")
+        .order("updated_at", { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as DocRow[];
+    },
+  });
+
+  const createDoc = useMutation({
+    mutationFn: async () => {
+      if (!userId) throw new Error("Not signed in");
+      const { data, error } = await supabase
+        .from("documents")
+        .insert({ user_id: userId, title: "Untitled document" })
+        .select("id")
+        .single();
+      if (error || !data) throw error ?? new Error("create failed");
+      return data.id as string;
+    },
+    onSuccess: (id) => {
+      queryClient.invalidateQueries({ queryKey: ["documents", userId] });
+      onOpen(id);
+    },
+    onError: () => toast.error("Could not create the document."),
+  });
+
+  const deleteDoc = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("documents").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Document deleted.");
+      queryClient.invalidateQueries({ queryKey: ["documents", userId] });
+    },
+    onError: () => toast.error("Could not delete that document."),
+  });
+
+  return (
+    <section className="glass-card mt-8 rounded-2xl p-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 className="text-lg font-bold">Documents you write</h2>
+          <p className="text-muted-foreground text-sm">
+            Type a letter, CV or notice here, then print or save it as a PDF.
+          </p>
+        </div>
+        <Button variant="hero" onClick={() => createDoc.mutate()} disabled={createDoc.isPending}>
+          <FilePlus2 className="size-4" /> New document
+        </Button>
+      </div>
+
+      {isLoading && <Skeleton className="mt-4 h-16 w-full rounded-xl" />}
+
+      <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {(docs ?? []).map((d) => (
+          <div key={d.id} className="border-border flex items-center gap-3 rounded-xl border p-3">
+            <span className="bg-secondary flex size-9 shrink-0 items-center justify-center rounded-lg">
+              <PenLine className="text-primary size-4" />
+            </span>
+            <button onClick={() => onOpen(d.id)} className="min-w-0 flex-1 text-left">
+              <p className="truncate font-semibold">{d.title || "Untitled document"}</p>
+              <p className="text-muted-foreground text-xs">
+                {d.word_count} words · {new Date(d.updated_at).toLocaleDateString()}
+              </p>
+            </button>
+            <Button variant="ghost" size="icon" onClick={() => deleteDoc.mutate(d.id)}>
+              <Trash2 className="text-destructive size-4" />
+            </Button>
+          </div>
+        ))}
+        {!isLoading && (docs ?? []).length === 0 && (
+          <p className="text-muted-foreground rounded-xl border border-dashed p-6 text-center text-sm sm:col-span-2 lg:col-span-3">
+            No documents yet. Tap “New document” to start writing.
+          </p>
+        )}
+      </div>
+    </section>
   );
 }
