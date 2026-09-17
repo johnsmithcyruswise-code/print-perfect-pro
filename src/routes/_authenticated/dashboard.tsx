@@ -12,7 +12,7 @@ import { SiteHeader } from "@/components/site-header";
 import { LocationConsent } from "@/components/location-consent";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { STATUS_FLOW, STATUS_LABEL, money } from "@/lib/pricing";
+import { STATUS_FLOW, STATUS_LABEL } from "@/lib/pricing";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -116,7 +116,6 @@ function Dashboard() {
 
   const active = orders?.filter((o) => !["completed", "shipped", "cancelled"].includes(o.status)) ?? [];
   const done = orders?.filter((o) => ["completed", "shipped"].includes(o.status)) ?? [];
-  const spend = done.reduce((sum, o) => sum + Number(o.staff_price ?? 0), 0);
 
   return (
     <div className="min-h-screen">
@@ -140,7 +139,7 @@ function Dashboard() {
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           <Stat icon={Clock} label="In production" value={String(active.length)} />
           <Stat icon={CheckCircle2} label="Completed" value={String(done.length)} />
-          <Stat icon={Wallet} label="Total paid" value={money(spend)} />
+          <Stat icon={Wallet} label="All orders" value={String(orders?.length ?? 0)} />
         </div>
 
         <div className="relative mt-8 max-w-sm">
@@ -193,14 +192,8 @@ function Dashboard() {
                   </div>
                   <div className="flex items-center gap-3">
                     <Badge variant="secondary">{STATUS_LABEL[o.status] ?? o.status}</Badge>
-                    <span className="font-mono text-lg font-bold">
-                      {o.staff_price != null ? (
-                        money(Number(o.staff_price))
-                      ) : (
-                        <span className="text-muted-foreground text-xs font-medium">
-                          Quote pending
-                        </span>
-                      )}
+                    <span className="text-muted-foreground text-xs font-medium">
+                      {o.turnaround ? `${o.turnaround} turnaround` : "In store"}
                     </span>
                   </div>
                 </div>
