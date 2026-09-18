@@ -13,13 +13,16 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedAutoprintRouteImport } from './routes/_authenticated/autoprint'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDocumentsRouteImport } from './routes/_authenticated/documents'
 import { Route as AuthenticatedEditorRouteImport } from './routes/_authenticated/editor'
+import { Route as AuthenticatedIdPhotoRouteImport } from './routes/_authenticated/id-photo'
 import { Route as AuthenticatedOrderRouteImport } from './routes/_authenticated/order'
 import { Route as AuthenticatedPassportRouteImport } from './routes/_authenticated/passport'
 import { Route as AuthenticatedPrintersRouteImport } from './routes/_authenticated/printers'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedTextEditorRouteImport } from './routes/_authenticated/text-editor'
 import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 
@@ -42,6 +45,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAutoprintRoute = AuthenticatedAutoprintRouteImport.update({
+  id: '/autoprint',
+  path: '/autoprint',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -55,6 +63,11 @@ const AuthenticatedDocumentsRoute = AuthenticatedDocumentsRouteImport.update({
 const AuthenticatedEditorRoute = AuthenticatedEditorRouteImport.update({
   id: '/editor',
   path: '/editor',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedIdPhotoRoute = AuthenticatedIdPhotoRouteImport.update({
+  id: '/id-photo',
+  path: '/id-photo',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedOrderRoute = AuthenticatedOrderRouteImport.update({
@@ -77,6 +90,11 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedTextEditorRoute = AuthenticatedTextEditorRouteImport.update({
+  id: '/text-editor',
+  path: '/text-editor',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedUsersRoute = AuthenticatedUsersRouteImport.update({
   id: '/users',
   path: '/users',
@@ -92,13 +110,16 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/autoprint': typeof AuthenticatedAutoprintRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/documents': typeof AuthenticatedDocumentsRoute
   '/editor': typeof AuthenticatedEditorRoute
+  '/id-photo': typeof AuthenticatedIdPhotoRoute
   '/order': typeof AuthenticatedOrderRoute
   '/passport': typeof AuthenticatedPassportRoute
   '/printers': typeof AuthenticatedPrintersRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/text-editor': typeof AuthenticatedTextEditorRoute
   '/users': typeof AuthenticatedUsersRoute
   '/admin/login': typeof AdminLoginRoute
 }
@@ -106,13 +127,16 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/autoprint': typeof AuthenticatedAutoprintRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/documents': typeof AuthenticatedDocumentsRoute
   '/editor': typeof AuthenticatedEditorRoute
+  '/id-photo': typeof AuthenticatedIdPhotoRoute
   '/order': typeof AuthenticatedOrderRoute
   '/passport': typeof AuthenticatedPassportRoute
   '/printers': typeof AuthenticatedPrintersRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/text-editor': typeof AuthenticatedTextEditorRoute
   '/users': typeof AuthenticatedUsersRoute
   '/admin/login': typeof AdminLoginRoute
 }
@@ -122,13 +146,16 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/autoprint': typeof AuthenticatedAutoprintRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/documents': typeof AuthenticatedDocumentsRoute
   '/_authenticated/editor': typeof AuthenticatedEditorRoute
+  '/_authenticated/id-photo': typeof AuthenticatedIdPhotoRoute
   '/_authenticated/order': typeof AuthenticatedOrderRoute
   '/_authenticated/passport': typeof AuthenticatedPassportRoute
   '/_authenticated/printers': typeof AuthenticatedPrintersRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/text-editor': typeof AuthenticatedTextEditorRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
   '/admin/login': typeof AdminLoginRoute
 }
@@ -138,13 +165,16 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/admin'
+    | '/autoprint'
     | '/dashboard'
     | '/documents'
     | '/editor'
+    | '/id-photo'
     | '/order'
     | '/passport'
     | '/printers'
     | '/settings'
+    | '/text-editor'
     | '/users'
     | '/admin/login'
   fileRoutesByTo: FileRoutesByTo
@@ -152,13 +182,16 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/admin'
+    | '/autoprint'
     | '/dashboard'
     | '/documents'
     | '/editor'
+    | '/id-photo'
     | '/order'
     | '/passport'
     | '/printers'
     | '/settings'
+    | '/text-editor'
     | '/users'
     | '/admin/login'
   id:
@@ -167,13 +200,16 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/admin'
+    | '/_authenticated/autoprint'
     | '/_authenticated/dashboard'
     | '/_authenticated/documents'
     | '/_authenticated/editor'
+    | '/_authenticated/id-photo'
     | '/_authenticated/order'
     | '/_authenticated/passport'
     | '/_authenticated/printers'
     | '/_authenticated/settings'
+    | '/_authenticated/text-editor'
     | '/_authenticated/users'
     | '/admin/login'
   fileRoutesById: FileRoutesById
@@ -215,6 +251,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/autoprint': {
+      id: '/_authenticated/autoprint'
+      path: '/autoprint'
+      fullPath: '/autoprint'
+      preLoaderRoute: typeof AuthenticatedAutoprintRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -234,6 +277,13 @@ declare module '@tanstack/react-router' {
       path: '/editor'
       fullPath: '/editor'
       preLoaderRoute: typeof AuthenticatedEditorRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/id-photo': {
+      id: '/_authenticated/id-photo'
+      path: '/id-photo'
+      fullPath: '/id-photo'
+      preLoaderRoute: typeof AuthenticatedIdPhotoRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/order': {
@@ -264,6 +314,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/text-editor': {
+      id: '/_authenticated/text-editor'
+      path: '/text-editor'
+      fullPath: '/text-editor'
+      preLoaderRoute: typeof AuthenticatedTextEditorRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/users': {
       id: '/_authenticated/users'
       path: '/users'
@@ -283,25 +340,31 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedAutoprintRoute: typeof AuthenticatedAutoprintRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDocumentsRoute: typeof AuthenticatedDocumentsRoute
   AuthenticatedEditorRoute: typeof AuthenticatedEditorRoute
+  AuthenticatedIdPhotoRoute: typeof AuthenticatedIdPhotoRoute
   AuthenticatedOrderRoute: typeof AuthenticatedOrderRoute
   AuthenticatedPassportRoute: typeof AuthenticatedPassportRoute
   AuthenticatedPrintersRoute: typeof AuthenticatedPrintersRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedTextEditorRoute: typeof AuthenticatedTextEditorRoute
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedAutoprintRoute: AuthenticatedAutoprintRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDocumentsRoute: AuthenticatedDocumentsRoute,
   AuthenticatedEditorRoute: AuthenticatedEditorRoute,
+  AuthenticatedIdPhotoRoute: AuthenticatedIdPhotoRoute,
   AuthenticatedOrderRoute: AuthenticatedOrderRoute,
   AuthenticatedPassportRoute: AuthenticatedPassportRoute,
   AuthenticatedPrintersRoute: AuthenticatedPrintersRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedTextEditorRoute: AuthenticatedTextEditorRoute,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,
 }
 
