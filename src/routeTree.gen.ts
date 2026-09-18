@@ -16,10 +16,12 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDocumentsRouteImport } from './routes/_authenticated/documents'
 import { Route as AuthenticatedEditorRouteImport } from './routes/_authenticated/editor'
+import { Route as AuthenticatedIdPhotoRouteImport } from './routes/_authenticated/id-photo'
 import { Route as AuthenticatedOrderRouteImport } from './routes/_authenticated/order'
 import { Route as AuthenticatedPassportRouteImport } from './routes/_authenticated/passport'
 import { Route as AuthenticatedPrintersRouteImport } from './routes/_authenticated/printers'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedTextEditorRouteImport } from './routes/_authenticated/text-editor'
 import { Route as AuthenticatedUsersRouteImport } from './routes/_authenticated/users'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 
@@ -57,6 +59,11 @@ const AuthenticatedEditorRoute = AuthenticatedEditorRouteImport.update({
   path: '/editor',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedIdPhotoRoute = AuthenticatedIdPhotoRouteImport.update({
+  id: '/id-photo',
+  path: '/id-photo',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedOrderRoute = AuthenticatedOrderRouteImport.update({
   id: '/order',
   path: '/order',
@@ -77,6 +84,11 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedTextEditorRoute = AuthenticatedTextEditorRouteImport.update({
+  id: '/text-editor',
+  path: '/text-editor',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedUsersRoute = AuthenticatedUsersRouteImport.update({
   id: '/users',
   path: '/users',
@@ -95,10 +107,12 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/documents': typeof AuthenticatedDocumentsRoute
   '/editor': typeof AuthenticatedEditorRoute
+  '/id-photo': typeof AuthenticatedIdPhotoRoute
   '/order': typeof AuthenticatedOrderRoute
   '/passport': typeof AuthenticatedPassportRoute
   '/printers': typeof AuthenticatedPrintersRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/text-editor': typeof AuthenticatedTextEditorRoute
   '/users': typeof AuthenticatedUsersRoute
   '/admin/login': typeof AdminLoginRoute
 }
@@ -109,10 +123,12 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/documents': typeof AuthenticatedDocumentsRoute
   '/editor': typeof AuthenticatedEditorRoute
+  '/id-photo': typeof AuthenticatedIdPhotoRoute
   '/order': typeof AuthenticatedOrderRoute
   '/passport': typeof AuthenticatedPassportRoute
   '/printers': typeof AuthenticatedPrintersRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/text-editor': typeof AuthenticatedTextEditorRoute
   '/users': typeof AuthenticatedUsersRoute
   '/admin/login': typeof AdminLoginRoute
 }
@@ -125,10 +141,12 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/documents': typeof AuthenticatedDocumentsRoute
   '/_authenticated/editor': typeof AuthenticatedEditorRoute
+  '/_authenticated/id-photo': typeof AuthenticatedIdPhotoRoute
   '/_authenticated/order': typeof AuthenticatedOrderRoute
   '/_authenticated/passport': typeof AuthenticatedPassportRoute
   '/_authenticated/printers': typeof AuthenticatedPrintersRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/text-editor': typeof AuthenticatedTextEditorRoute
   '/_authenticated/users': typeof AuthenticatedUsersRoute
   '/admin/login': typeof AdminLoginRoute
 }
@@ -141,10 +159,12 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/documents'
     | '/editor'
+    | '/id-photo'
     | '/order'
     | '/passport'
     | '/printers'
     | '/settings'
+    | '/text-editor'
     | '/users'
     | '/admin/login'
   fileRoutesByTo: FileRoutesByTo
@@ -155,10 +175,12 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/documents'
     | '/editor'
+    | '/id-photo'
     | '/order'
     | '/passport'
     | '/printers'
     | '/settings'
+    | '/text-editor'
     | '/users'
     | '/admin/login'
   id:
@@ -170,10 +192,12 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/documents'
     | '/_authenticated/editor'
+    | '/_authenticated/id-photo'
     | '/_authenticated/order'
     | '/_authenticated/passport'
     | '/_authenticated/printers'
     | '/_authenticated/settings'
+    | '/_authenticated/text-editor'
     | '/_authenticated/users'
     | '/admin/login'
   fileRoutesById: FileRoutesById
@@ -236,6 +260,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEditorRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/id-photo': {
+      id: '/_authenticated/id-photo'
+      path: '/id-photo'
+      fullPath: '/id-photo'
+      preLoaderRoute: typeof AuthenticatedIdPhotoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/order': {
       id: '/_authenticated/order'
       path: '/order'
@@ -264,6 +295,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/text-editor': {
+      id: '/_authenticated/text-editor'
+      path: '/text-editor'
+      fullPath: '/text-editor'
+      preLoaderRoute: typeof AuthenticatedTextEditorRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/users': {
       id: '/_authenticated/users'
       path: '/users'
@@ -286,10 +324,12 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDocumentsRoute: typeof AuthenticatedDocumentsRoute
   AuthenticatedEditorRoute: typeof AuthenticatedEditorRoute
+  AuthenticatedIdPhotoRoute: typeof AuthenticatedIdPhotoRoute
   AuthenticatedOrderRoute: typeof AuthenticatedOrderRoute
   AuthenticatedPassportRoute: typeof AuthenticatedPassportRoute
   AuthenticatedPrintersRoute: typeof AuthenticatedPrintersRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedTextEditorRoute: typeof AuthenticatedTextEditorRoute
   AuthenticatedUsersRoute: typeof AuthenticatedUsersRoute
 }
 
@@ -298,10 +338,12 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDocumentsRoute: AuthenticatedDocumentsRoute,
   AuthenticatedEditorRoute: AuthenticatedEditorRoute,
+  AuthenticatedIdPhotoRoute: AuthenticatedIdPhotoRoute,
   AuthenticatedOrderRoute: AuthenticatedOrderRoute,
   AuthenticatedPassportRoute: AuthenticatedPassportRoute,
   AuthenticatedPrintersRoute: AuthenticatedPrintersRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedTextEditorRoute: AuthenticatedTextEditorRoute,
   AuthenticatedUsersRoute: AuthenticatedUsersRoute,
 }
 
