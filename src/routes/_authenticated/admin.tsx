@@ -48,7 +48,7 @@ import { BrandLogo } from "@/components/brand-logo";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { useRoles } from "@/hooks/use-role";
-import { STATUS_FLOW, STATUS_LABEL, STORE, money } from "@/lib/pricing";
+import { STATUS_FLOW, STATUS_LABEL, STORE } from "@/lib/pricing";
 import { cleanOldStorage } from "@/lib/admin.functions";
 import { printOrderTicket } from "@/lib/qz-print";
 import type { Database } from "@/integrations/supabase/types";
@@ -739,7 +739,7 @@ function OrderSheet({ order, onClose }: { order: Order | null; onClose: () => vo
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="price">Internal job note number (optional)</Label>
+            <Label htmlFor="price">Internal reference number (staff only)</Label>
             <Input
               id="price"
               type="number"
