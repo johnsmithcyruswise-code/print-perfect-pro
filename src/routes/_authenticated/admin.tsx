@@ -199,7 +199,13 @@ function AdminPage() {
             </button>
           ))}
         </nav>
-        <div className="p-4 border-t border-border">
+        <div className="p-4 border-t border-border space-y-1">
+          <Button variant="ghost" className="w-full justify-start" asChild>
+            <Link to="/autoprint">AutoPrint station</Link>
+          </Button>
+          <Button variant="ghost" className="w-full justify-start" asChild>
+            <Link to="/id-photo">ID Photo Studio</Link>
+          </Button>
           <Button variant="ghost" className="w-full justify-start" onClick={adminSignOut}>
             <LogOut className="size-4" /> Log out
           </Button>
