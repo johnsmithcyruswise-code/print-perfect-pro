@@ -76,7 +76,6 @@ function orderTicketHtml(order: OrderTicket): string {
     `<p><strong>Sides:</strong> ${order.sides}</p>`,
     `<p><strong>Binding:</strong> ${order.binding}</p>`,
     `<p><strong>Turnaround:</strong> ${order.turnaround}</p>`,
-    order.staff_price ? `<p><strong>Quote:</strong> KES ${order.staff_price}</p>` : "",
     order.staff_notes ? `<p><strong>Notes:</strong> ${order.staff_notes}</p>` : "",
     `<p style="font-size:10px;color:#666">Printed ${new Date().toLocaleString()}</p>`,
   ];

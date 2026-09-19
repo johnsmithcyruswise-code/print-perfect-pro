@@ -252,9 +252,7 @@ function DashboardTab() {
     return {
       today: list.filter((o) => new Date(o.created_at).toDateString() === today).length,
       pending: list.filter((o) => o.status === "pending").length,
-      revenue: list
-        .filter((o) => o.status === "completed")
-        .reduce((s, o) => s + Number(o.staff_price ?? 0), 0),
+      completed: list.filter((o) => o.status === "completed").length,
       queue: list.filter((o) => ["processing", "printing"].includes(o.status)).length,
     };
   }, [orders]);
@@ -282,7 +280,7 @@ function DashboardTab() {
         <Kpi icon={Package} label="Orders today" value={String(kpis.today)} />
         <Kpi icon={Timer} label="Awaiting quote" value={String(kpis.pending)} />
         <Kpi icon={PrinterIcon} label="On the press" value={String(kpis.queue)} />
-        <Kpi icon={Wallet} label="Completed revenue" value={money(kpis.revenue)} />
+        <Kpi icon={Wallet} label="Completed jobs" value={String(kpis.completed)} />
       </div>
 
       <div className="glass-card rounded-2xl p-6">
@@ -741,7 +739,7 @@ function OrderSheet({ order, onClose }: { order: Order | null; onClose: () => vo
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="price">Quoted price (KES)</Label>
+            <Label htmlFor="price">Internal job note number (optional)</Label>
             <Input
               id="price"
               type="number"
