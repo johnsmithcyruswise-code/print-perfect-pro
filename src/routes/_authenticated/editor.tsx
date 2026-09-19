@@ -18,6 +18,7 @@ import {
 import { SiteHeader } from "@/components/site-header";
 import { supabase } from "@/integrations/supabase/client";
 import { EditorSurface, EditorToolbar, useRichEditor } from "@/components/rich-editor";
+import { AiFixButton } from "@/components/ai-fix-button";
 
 export const Route = createFileRoute("/_authenticated/editor")({
   validateSearch: (search: Record<string, unknown>) => ({ id: String(search["id"] ?? "") }),
@@ -184,6 +185,26 @@ function EditorPage() {
             </Badge>
             <span className="text-muted-foreground font-mono text-xs">{words} words</span>
             <VersionsSheet documentId={id} />
+            {editor && (
+              <AiFixButton
+                getText={() => editor.getText()}
+                onFixed={(text) => {
+                  editor
+                    .chain()
+                    .focus()
+                    .setContent(
+                      text
+                        .split(/\n{2,}/)
+                        .map((p) => `<p>${p.replace(/\n/g, "<br>")}</p>`)
+                        .join("") as never,
+                    )
+                    .run();
+                  setWords(countWords(text));
+                  dirty.current = true;
+                  void save(false);
+                }}
+              />
+            )}
             <Button variant="soft" size="sm" onClick={() => void save(true)}>
               <Save /> Save version
             </Button>

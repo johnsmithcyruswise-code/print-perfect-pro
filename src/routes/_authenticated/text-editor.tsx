@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { SiteHeader } from "@/components/site-header";
+import { AiFixButton } from "@/components/ai-fix-button";
 
 export const Route = createFileRoute("/_authenticated/text-editor")({
   head: () => ({
@@ -152,6 +153,7 @@ function TextEditorPage() {
               </div>
             </div>
             <div className="mt-6 grid gap-2">
+              <AiFixButton size="default" getText={() => text} onFixed={setText} />
               <Button variant="hero" onClick={print}>
                 <Printer className="size-4" /> Print
               </Button>
