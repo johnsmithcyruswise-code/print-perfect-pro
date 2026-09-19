@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { SiteHeader } from "@/components/site-header";
+import { AiFixButton } from "@/components/ai-fix-button";
 
 export const Route = createFileRoute("/_authenticated/text-editor")({
   head: () => ({
