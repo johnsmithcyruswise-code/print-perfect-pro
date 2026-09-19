@@ -89,7 +89,7 @@ function AutoPrintStation() {
         .select(
           "id, order_number, user_id, status, order_type, quantity, paper_size, paper_type, color_mode, sides, binding, turnaround, staff_notes, customer_notes, created_at",
         )
-        .in("status", QUEUE_STATUSES as unknown as string[])
+        .in("status", [...QUEUE_STATUSES])
         .order("created_at", { ascending: true });
       if (error) throw error;
       return data;
