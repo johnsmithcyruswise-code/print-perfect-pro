@@ -203,7 +203,7 @@ function EditorPage() {
                   dirty.current = true;
                   void save(false);
                 }}
-              /><
+              />
             )}
             <Button variant="soft" size="sm" onClick={() => void save(true)}>
               <Save /> Save version

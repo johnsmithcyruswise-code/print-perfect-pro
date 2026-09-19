@@ -153,6 +153,7 @@ function TextEditorPage() {
               </div>
             </div>
             <div className="mt-6 grid gap-2">
+              <AiFixButton size="default" getText={() => text} onFixed={setText} />
               <Button variant="hero" onClick={print}>
                 <Printer className="size-4" /> Print
               </Button>
