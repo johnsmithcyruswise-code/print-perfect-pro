@@ -183,7 +183,10 @@ function IdPhotoStudio() {
 
   function download() {
     const data = buildSheet();
-    if (!data) return toast.error("Add a photo first.");
+    if (!data) {
+      toast.error("Add a photo first.");
+      return;
+    }
     const a = document.createElement("a");
     a.href = data;
     a.download = `id-photo-sheet-${photoW}x${photoH}mm.jpg`;
@@ -193,9 +196,15 @@ function IdPhotoStudio() {
 
   function printSheet() {
     const data = buildSheet();
-    if (!data) return toast.error("Add a photo first.");
+    if (!data) {
+      toast.error("Add a photo first.");
+      return;
+    }
     const w = window.open("", "_blank", "width=900,height=700");
-    if (!w) return toast.error("Allow pop-ups to print the sheet.");
+    if (!w) {
+      toast.error("Allow pop-ups to print the sheet.");
+      return;
+    }
     w.document.write(
       `<html><head><title>ID photo sheet</title><style>@page{size:6in 4in;margin:0}body{margin:0}img{width:100%;display:block}</style></head><body onload="setTimeout(()=>{window.print();},400)"><img src="${data}" /></body></html>`,
     );

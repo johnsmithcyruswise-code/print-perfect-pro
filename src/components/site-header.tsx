@@ -1,5 +1,14 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { LogOut, LayoutDashboard, ShieldCheck, Users, FileText, Settings } from "lucide-react";
+import {
+  LogOut,
+  LayoutDashboard,
+  ShieldCheck,
+  Users,
+  FileText,
+  Settings,
+  IdCard,
+  Type,
+} from "lucide-react";
 import { BrandLogo } from "@/components/brand-logo";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -46,6 +55,16 @@ export function SiteHeader() {
                   </Link>
                 </Button>
               )}
+              <Button asChild variant="ghost" size="sm">
+                <Link to="/id-photo">
+                  <IdCard /> ID photos
+                </Link>
+              </Button>
+              <Button asChild variant="ghost" size="sm">
+                <Link to="/text-editor">
+                  <Type /> Quick text
+                </Link>
+              </Button>
               <Button asChild variant="ghost" size="sm">
                 <Link to="/documents">
                   <FileText /> Documents

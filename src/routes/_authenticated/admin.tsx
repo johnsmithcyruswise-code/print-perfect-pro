@@ -48,7 +48,7 @@ import { BrandLogo } from "@/components/brand-logo";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { useRoles } from "@/hooks/use-role";
-import { STATUS_FLOW, STATUS_LABEL, STORE, money } from "@/lib/pricing";
+import { STATUS_FLOW, STATUS_LABEL, STORE } from "@/lib/pricing";
 import { cleanOldStorage } from "@/lib/admin.functions";
 import { printOrderTicket } from "@/lib/qz-print";
 import type { Database } from "@/integrations/supabase/types";
@@ -199,7 +199,13 @@ function AdminPage() {
             </button>
           ))}
         </nav>
-        <div className="p-4 border-t border-border">
+        <div className="p-4 border-t border-border space-y-1">
+          <Button variant="ghost" className="w-full justify-start" asChild>
+            <Link to="/autoprint">AutoPrint station</Link>
+          </Button>
+          <Button variant="ghost" className="w-full justify-start" asChild>
+            <Link to="/id-photo">ID Photo Studio</Link>
+          </Button>
           <Button variant="ghost" className="w-full justify-start" onClick={adminSignOut}>
             <LogOut className="size-4" /> Log out
           </Button>
@@ -252,9 +258,7 @@ function DashboardTab() {
     return {
       today: list.filter((o) => new Date(o.created_at).toDateString() === today).length,
       pending: list.filter((o) => o.status === "pending").length,
-      revenue: list
-        .filter((o) => o.status === "completed")
-        .reduce((s, o) => s + Number(o.staff_price ?? 0), 0),
+      completed: list.filter((o) => o.status === "completed").length,
       queue: list.filter((o) => ["processing", "printing"].includes(o.status)).length,
     };
   }, [orders]);
@@ -282,7 +286,7 @@ function DashboardTab() {
         <Kpi icon={Package} label="Orders today" value={String(kpis.today)} />
         <Kpi icon={Timer} label="Awaiting quote" value={String(kpis.pending)} />
         <Kpi icon={PrinterIcon} label="On the press" value={String(kpis.queue)} />
-        <Kpi icon={Wallet} label="Completed revenue" value={money(kpis.revenue)} />
+        <Kpi icon={Wallet} label="Completed jobs" value={String(kpis.completed)} />
       </div>
 
       <div className="glass-card rounded-2xl p-6">
@@ -741,7 +745,7 @@ function OrderSheet({ order, onClose }: { order: Order | null; onClose: () => vo
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="price">Quoted price (KES)</Label>
+            <Label htmlFor="price">Internal reference number (staff only)</Label>
             <Input
               id="price"
               type="number"

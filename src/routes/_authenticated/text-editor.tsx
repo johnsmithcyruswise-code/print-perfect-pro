@@ -78,7 +78,10 @@ function TextEditorPage() {
 
   function print() {
     const w = window.open("", "_blank", "width=900,height=800");
-    if (!w) return toast.error("Allow pop-ups to print.");
+    if (!w) {
+      toast.error("Allow pop-ups to print.");
+      return;
+    }
     w.document.write(bodyHtml().replace("<body>", `<body onload="setTimeout(()=>window.print(),300)">`));
     w.document.close();
   }
