@@ -20,6 +20,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useRoles } from "@/hooks/use-role";
 import { printOrderTicket, type OrderTicket } from "@/lib/qz-print";
 import { STATUS_LABEL } from "@/lib/pricing";
+import { useCustomers, customerLabel } from "@/hooks/use-customers";
 
 export const Route = createFileRoute("/_authenticated/autoprint")({
   head: () => ({
@@ -242,7 +243,8 @@ function AutoPrintStation() {
             >
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-mono font-bold">{job.order_number}</span>
+                  <span className="font-bold">{customerLabel(customers.get(job.user_id))}</span>
+                  <span className="text-muted-foreground text-sm">{customers.get(job.user_id)?.phone ?? ""}</span>
                   <Badge variant="secondary">{STATUS_LABEL[job.status] ?? job.status}</Badge>
                   <Badge variant="outline">{job.order_type}</Badge>
                 </div>

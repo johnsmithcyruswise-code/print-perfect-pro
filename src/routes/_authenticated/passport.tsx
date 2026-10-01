@@ -9,6 +9,24 @@ import { SiteHeader } from "@/components/site-header";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { STORE } from "@/lib/pricing";
+import { whitenPhotoBackground } from "@/lib/ai.functions";
+
+async function toDataUrl(file: File, max = 1280): Promise<string> {
+  const img = await createImageBitmap(file);
+  const scale = Math.min(1, max / Math.max(img.width, img.height));
+  const c = document.createElement("canvas");
+  c.width = Math.round(img.width * scale);
+  c.height = Math.round(img.height * scale);
+  const ctx = c.getContext("2d")!;
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, c.width, c.height);
+  ctx.drawImage(img, 0, 0, c.width, c.height);
+  return c.toDataURL("image/jpeg", 0.9);
+}
+
+async function dataUrlToBlob(url: string): Promise<Blob> {
+  return await (await fetch(url)).blob();
+}
 
 export const Route = createFileRoute("/_authenticated/passport")({
   head: () => ({
@@ -83,42 +101,69 @@ function PassportPage() {
         .single();
       if (error || !order) throw error ?? new Error("Order failed");
 
-      const path = `${user.id}/${order.id}/${crypto.randomUUID()}-${file.name}`;
-      const { error: upErr } = await supabase.storage.from("print-files").upload(path, file);
+      // Make the background white before it reaches staff
+      setProgress(30);
+      let finalBlob: Blob = file;
+      let whitened = false;
+      try {
+        const src = await toDataUrl(file);
+        const { image } = await whitenPhotoBackground({ data: { image: src } });
+        finalBlob = await dataUrlToBlob(image);
+        whitened = true;
+      } catch (e) {
+        console.warn("[passport] background whitening failed, sending original", e);
+        toast.message("Sent your photo as-is — staff will fix the background.");
+      }
+      setProgress(70);
+      const ext = finalBlob.type.includes("png") ? "png" : "jpg";
+      const fileName = `passport-${order.order_number}.${ext}`;
+      const path = `${user.id}/${order.id}/${fileName}`;
+      const { error: upErr } = await supabase.storage
+        .from("print-files")
+        .upload(path, finalBlob, { contentType: finalBlob.type || "image/jpeg", upsert: true });
       if (upErr) throw upErr;
 
       await supabase.from("order_files").insert({
         order_id: order.id,
         user_id: user.id,
         file_path: path,
-        file_name: file.name,
-        size_bytes: file.size,
-        content_type: file.type || null,
+        file_name: fileName,
+        size_bytes: finalBlob.size,
+        content_type: finalBlob.type || null,
       });
 
-      // Put in Passport folder if it exists
-      const { data: passportFolder } = await supabase
+      // Always file it in the customer's Passport folder (create if missing)
+      let { data: passportFolder } = await supabase
         .from("folders")
         .select("id")
         .eq("user_id", user.id)
         .eq("name", "Passport")
-        .single();
+        .limit(1)
+        .maybeSingle();
+      if (!passportFolder) {
+        const { data: created } = await supabase
+          .from("folders")
+          .insert({ user_id: user.id, name: "Passport" })
+          .select("id")
+          .single();
+        passportFolder = created;
+      }
       if (passportFolder) {
         await supabase.from("files").insert({
           user_id: user.id,
           folder_id: passportFolder.id,
           order_id: order.id,
-          name: file.name,
+          name: fileName,
           url: path,
-          size: file.size,
-          type: file.type || null,
+          size: finalBlob.size,
+          type: finalBlob.type || null,
         });
       }
 
       await supabase.from("order_events").insert({
         order_id: order.id,
         status: "pending",
-        note: "Passport photo submitted — awaiting staff approval",
+        note: whitened ? "Passport photo submitted (white background applied) — awaiting approval" : "Passport photo submitted — awaiting staff approval",
       });
 
       setProgress(100);

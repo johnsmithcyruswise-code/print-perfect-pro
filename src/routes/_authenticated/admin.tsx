@@ -51,6 +51,7 @@ import { useRoles } from "@/hooks/use-role";
 import { STATUS_FLOW, STATUS_LABEL, STORE } from "@/lib/pricing";
 import { cleanOldStorage } from "@/lib/admin.functions";
 import { printOrderTicket } from "@/lib/qz-print";
+import { useCustomers, customerLabel } from "@/hooks/use-customers";
 import type { Database } from "@/integrations/supabase/types";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -318,6 +319,7 @@ function DashboardTab() {
 
 function OrdersTab({ onSelect }: { onSelect: (o: Order) => void }) {
   const [filter, setFilter] = useState("");
+  const customers = useCustomers();
   const { data: orders, isLoading } = useQuery({
     queryKey: ["admin-orders"],
     queryFn: async () => {
@@ -334,11 +336,13 @@ function OrdersTab({ onSelect }: { onSelect: (o: Order) => void }) {
       list = list.filter(
         (o) =>
           o.order_number.toLowerCase().includes(q) ||
+          customerLabel(customers.get(o.user_id)).toLowerCase().includes(q) ||
+          (customers.get(o.user_id)?.phone ?? "").includes(q) ||
           o.status.toLowerCase().includes(q)
       );
     }
     return list;
-  }, [orders, filter]);
+  }, [orders, filter, customers]);
 
   return (
     <div className="space-y-6">
@@ -348,7 +352,7 @@ function OrdersTab({ onSelect }: { onSelect: (o: Order) => void }) {
           <p className="text-muted-foreground mt-1 text-sm">Search, quote and move print jobs.</p>
         </div>
         <Input
-          placeholder="Search order number or status"
+          placeholder="Search customer name, phone or status"
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
           className="max-w-xs"
@@ -365,7 +369,10 @@ function OrdersTab({ onSelect }: { onSelect: (o: Order) => void }) {
               className="glass-card w-full rounded-2xl p-4 text-left hover:border-primary/50 transition-colors"
             >
               <div className="flex items-center justify-between">
-                <span className="font-mono font-bold">{o.order_number}</span>
+                <div className="min-w-0">
+                  <p className="font-bold truncate">{customerLabel(customers.get(o.user_id))}</p>
+                  <p className="text-sm text-muted-foreground">{customers.get(o.user_id)?.phone ?? "No phone"}</p>
+                </div>
                 <StatusBadge status={o.status} />
               </div>
               <p className="text-muted-foreground text-xs mt-1">
@@ -389,6 +396,7 @@ function OrdersTab({ onSelect }: { onSelect: (o: Order) => void }) {
 
 function PassportTab() {
   const queryClient = useQueryClient();
+  const customers = useCustomers();
   const { data: orders, isLoading } = useQuery({
     queryKey: ["admin-passport"],
     queryFn: async () => {
@@ -428,12 +436,15 @@ function PassportTab() {
           {(orders ?? []).map((o) => (
             <div key={o.id} className="glass-card rounded-2xl p-4 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="font-mono font-bold text-sm">{o.order_number}</span>
+                <div className="min-w-0">
+                  <p className="font-bold truncate">{customerLabel(customers.get(o.user_id))}</p>
+                  <p className="text-xs text-muted-foreground">{customers.get(o.user_id)?.phone ?? "No phone"}</p>
+                </div>
                 <StatusBadge status={o.status} />
               </div>
-              <div className="aspect-[3/4] rounded-xl border border-border bg-black/5 overflow-hidden">
+              <div className="aspect-[3/4] rounded-xl border border-border bg-card overflow-hidden">
                 {o.order_files?.[0] ? (
-                  <PassportImage path={o.order_files[0].file_path} />
+                  <PassportImage path={o.order_files[o.order_files.length - 1].file_path} />
                 ) : (
                   <div className="h-full flex items-center justify-center text-muted-foreground text-xs">
                     No image
@@ -485,17 +496,35 @@ function PassportImage({ path }: { path: string }) {
 }
 
 function FilesTab() {
+  const customers = useCustomers();
+  const [open, setOpen] = useState<string | null>(null);
+  const [q, setQ] = useState("");
   const { data: files, isLoading } = useQuery({
     queryKey: ["admin-files"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("files")
-        .select("id, user_id, order_id, folder_id, name, url, size, type, uploaded_at")
+        .select("id, user_id, order_id, folder_id, name, url, size, type, uploaded_at, folders(name)")
         .order("uploaded_at", { ascending: false });
       if (error) throw error;
-      return data as FileRow[];
+      return data as unknown as (FileRow & { folders: { name: string } | null })[];
     },
   });
+
+  const groups = useMemo(() => {
+    const m = new Map<string, NonNullable<typeof files>>();
+    for (const f of files ?? []) {
+      const list = m.get(f.user_id) ?? [];
+      list.push(f);
+      m.set(f.user_id, list);
+    }
+    const term = q.toLowerCase().trim();
+    return [...m.entries()].filter(([uid]) => {
+      if (!term) return true;
+      const c = customers.get(uid);
+      return customerLabel(c).toLowerCase().includes(term) || (c?.phone ?? "").includes(term);
+    });
+  }, [files, customers, q]);
 
   async function download(file: FileRow) {
     const { data, error } = await supabase.storage.from("print-files").createSignedUrl(file.url, 60);
@@ -508,30 +537,58 @@ function FilesTab() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-extrabold tracking-tight">Customer Files</h1>
-        <p className="text-muted-foreground mt-1 text-sm">Browse and download files uploaded by customers.</p>
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight">Customer Files</h1>
+          <p className="text-muted-foreground mt-1 text-sm">One folder per customer. Tap a folder to open it.</p>
+        </div>
+        <Input placeholder="Search customer name or phone" value={q} onChange={(e) => setQ(e.target.value)} className="max-w-xs" />
       </div>
       {isLoading ? (
         <Skeleton className="h-40 w-full rounded-2xl" />
       ) : (
-        <div className="space-y-2">
-          {(files ?? []).map((f) => (
-            <div key={f.id} className="glass-card rounded-2xl p-4 flex items-center justify-between gap-4">
-              <div className="min-w-0">
-                <p className="font-semibold truncate">{f.name}</p>
-                <p className="text-muted-foreground text-xs">
-                  {new Date(f.uploaded_at).toLocaleString()} · {(f.size / 1024 / 1024).toFixed(2)} MB
-                </p>
+        <div className="space-y-3">
+          {groups.map(([uid, list]) => {
+            const c = customers.get(uid);
+            const isOpen = open === uid;
+            return (
+              <div key={uid} className="glass-card rounded-2xl">
+                <button
+                  onClick={() => setOpen(isOpen ? null : uid)}
+                  className="flex w-full items-center gap-3 p-4 text-left"
+                >
+                  <FolderOpen className="size-6 text-secondary shrink-0" />
+                  <div className="min-w-0 flex-1">
+                    <p className="font-bold truncate">{customerLabel(c)}</p>
+                    <p className="text-muted-foreground text-xs">
+                      {c?.phone ?? "No phone"} · {list.length} file{list.length === 1 ? "" : "s"}
+                    </p>
+                  </div>
+                </button>
+                {isOpen && (
+                  <div className="space-y-2 border-t border-border p-3">
+                    {list.map((f) => (
+                      <div key={f.id} className="flex items-center justify-between gap-4 rounded-xl bg-muted/40 p-3">
+                        <div className="min-w-0">
+                          <p className="font-semibold truncate text-sm">{f.name}</p>
+                          <p className="text-muted-foreground text-xs">
+                            {f.folders?.name ?? "Unsorted"} · {new Date(f.uploaded_at).toLocaleString()} ·{" "}
+                            {(f.size / 1024 / 1024).toFixed(2)} MB
+                          </p>
+                        </div>
+                        <Button variant="soft" size="sm" onClick={() => download(f)}>
+                          <Download className="size-4" /> Download
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-              <Button variant="soft" size="sm" onClick={() => download(f)}>
-                <Download className="size-4" /> Download
-              </Button>
-            </div>
-          ))}
-          {!isLoading && (files ?? []).length === 0 && (
+            );
+          })}
+          {groups.length === 0 && (
             <p className="text-muted-foreground rounded-2xl border border-dashed p-10 text-center text-sm">
-              No files uploaded yet.
+              No customer files yet.
             </p>
           )}
         </div>
