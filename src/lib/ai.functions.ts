@@ -91,3 +91,47 @@ export const fixDocumentText = createServerFn({ method: "POST" })
     if (!cleaned) throw new Error("The AI could not rewrite this text. Try again.");
     return { text: cleaned };
   });
+
+const PhotoInput = z.object({ image: z.string().startsWith("data:image/").max(8_000_000) });
+
+/** Replace a portrait photo's background with plain white (passport/ID style). */
+export const whitenPhotoBackground = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => PhotoInput.parse(input))
+  .handler(async ({ data }) => {
+    const key = process.env["LOVABLE_API_KEY"];
+    if (!key) throw new Error("AI is not configured.");
+    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${key}`,
+        "Lovable-API-Key": key,
+        "X-Lovable-AIG-SDK": "fetch",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash-image",
+        modalities: ["image", "text"],
+        messages: [
+          {
+            role: "user",
+            content: [
+              {
+                type: "text",
+                text: "Replace the background of this portrait with a plain, evenly lit pure white background (#FFFFFF) suitable for a passport photo. Keep the person's face, hair, clothing, skin tone and expression exactly the same. Do not crop, do not add anything.",
+              },
+              { type: "image_url", image_url: { url: data.image } },
+            ],
+          },
+        ],
+      }),
+    });
+    if (!res.ok) {
+      if (res.status === 429) throw new Error("The AI is busy right now. Try again in a moment.");
+      if (res.status === 402) throw new Error("AI credits are used up.");
+      throw new Error(`AI request failed (${res.status}).`);
+    }
+    const json = (await res.json()) as any;
+    const url: string | undefined = json?.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    if (!url) throw new Error("The AI did not return a photo.");
+    return { image: url };
+  });
