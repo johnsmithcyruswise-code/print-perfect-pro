@@ -31,7 +31,7 @@ async function withCustomer(order: OrderTicket): Promise<OrderTicket> {
     .select("full_name, phone, email")
     .eq("id", order.user_id)
     .maybeSingle();
-  return { ...order, customer_name: data?.full_name, customer_phone: data?.phone, customer_email: data?.email };
+  return { ...order, customer_name: data?.full_name ?? null, customer_phone: data?.phone ?? null, customer_email: data?.email ?? null };
 }
 
 let qzModule: any = null;
