@@ -15,7 +15,24 @@ export type OrderTicket = {
   turnaround: string;
   staff_price?: number | null;
   staff_notes?: string | null;
+  customer_notes?: string | null;
+  customer_name?: string | null;
+  customer_phone?: string | null;
+  customer_email?: string | null;
 };
+
+const esc = (v: unknown) =>
+  String(v ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
+
+async function withCustomer(order: OrderTicket): Promise<OrderTicket> {
+  if (order.customer_name || order.customer_phone) return order;
+  const { data } = await supabase
+    .from("profiles")
+    .select("full_name, phone, email")
+    .eq("id", order.user_id)
+    .maybeSingle();
+  return { ...order, customer_name: data?.full_name ?? null, customer_phone: data?.phone ?? null, customer_email: data?.email ?? null };
+}
 
 let qzModule: any = null;
 let qzConnected = false;
@@ -66,8 +83,11 @@ export async function findDefaultPrinter(): Promise<string | null> {
 
 function orderTicketHtml(order: OrderTicket): string {
   const lines = [
-    "<h2>Planned Kid Computer Services — Order Ticket</h2>",
-    `<p><strong>Order #:</strong> ${order.order_number}</p>`,
+    "<p style=\"font-size:11px;color:#666;margin:0\">Planned Kid Computer Services</p>",
+    `<h1 style="font-size:26px;margin:4px 0">${esc(order.customer_name || order.customer_email || "Customer")}</h1>`,
+    order.customer_phone ? `<p style="font-size:18px;margin:0 0 8px"><strong>Tel:</strong> ${esc(order.customer_phone)}</p>` : "",
+    order.customer_email && order.customer_name ? `<p style="margin:0 0 8px">${esc(order.customer_email)}</p>` : "",
+    "<hr/>",
     `<p><strong>Type:</strong> ${order.order_type}</p>`,
     `<p><strong>Status:</strong> ${order.status}</p>`,
     `<p><strong>Qty:</strong> ${order.quantity}</p>`,
@@ -76,7 +96,9 @@ function orderTicketHtml(order: OrderTicket): string {
     `<p><strong>Sides:</strong> ${order.sides}</p>`,
     `<p><strong>Binding:</strong> ${order.binding}</p>`,
     `<p><strong>Turnaround:</strong> ${order.turnaround}</p>`,
-    order.staff_notes ? `<p><strong>Notes:</strong> ${order.staff_notes}</p>` : "",
+    order.customer_notes ? `<p><strong>Customer says:</strong> ${esc(order.customer_notes)}</p>` : "",
+    order.staff_notes ? `<p><strong>Notes:</strong> ${esc(order.staff_notes)}</p>` : "",
+    `<p style="font-size:10px;color:#666">Ref ${esc(order.order_number)}</p>`,
     `<p style="font-size:10px;color:#666">Printed ${new Date().toLocaleString()}</p>`,
   ];
   return `<div style="font-family:sans-serif;padding:16px;max-width:400px">${lines.join("")}</div>`;
@@ -86,6 +108,7 @@ export async function printOrderTicket(
   order: OrderTicket,
   operatorId: string,
 ): Promise<{ ok: boolean; fallback: boolean; message: string }> {
+  order = await withCustomer(order);
   if (!isQZAvailable()) return await fallbackPrint(order);
 
   const qz = await getQz();
@@ -112,7 +135,7 @@ export async function printOrderTicket(
 async function fallbackPrint(order: OrderTicket): Promise<{ ok: boolean; fallback: boolean; message: string }> {
   const html = `
     <html>
-      <head><title>Order ${order.order_number}</title></head>
+      <head><title>${esc(order.customer_name || order.order_number)}</title></head>
       <body onload="setTimeout(()=>{window.print();window.close();},300)">
         ${orderTicketHtml(order)}
       </body>
