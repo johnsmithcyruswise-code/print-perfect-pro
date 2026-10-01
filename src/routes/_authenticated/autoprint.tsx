@@ -75,6 +75,7 @@ function AutoPrintStation() {
   const { user } = useAuth();
   const { isStaff, loading } = useRoles();
   const queryClient = useQueryClient();
+  const customers = useCustomers();
   const [sound, setSound] = useState(true);
   const [kiosk, setKiosk] = useState(false);
   const soundRef = useRef(sound);

@@ -708,6 +708,8 @@ function SettingsTab() {
 }
 
 function OrderSheet({ order, onClose }: { order: Order | null; onClose: () => void }) {
+  const customers = useCustomers();
+  const cust = order ? customers.get(order.user_id) : undefined;
   const queryClient = useQueryClient();
   const [price, setPrice] = useState("");
   const [staffNotes, setStaffNotes] = useState("");
@@ -766,7 +768,8 @@ function OrderSheet({ order, onClose }: { order: Order | null; onClose: () => vo
     <Sheet open={!!order} onOpenChange={(open) => !open && onClose()}>
       <SheetContent className="w-full overflow-y-auto sm:max-w-lg">
         <SheetHeader>
-          <SheetTitle className="font-mono">{order.order_number}</SheetTitle>
+          <SheetTitle>{customerLabel(cust)}</SheetTitle>
+          <p className="text-sm text-muted-foreground">{cust?.phone ?? "No phone"}{cust?.email ? ` · ${cust.email}` : ""} · <span className="font-mono text-xs">Ref {order.order_number}</span></p>
           <SheetDescription>Received {new Date(order.created_at).toLocaleString()}</SheetDescription>
         </SheetHeader>
         <div className="space-y-6 px-4 pb-8 mt-6">
