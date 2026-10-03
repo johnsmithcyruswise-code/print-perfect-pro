@@ -50,7 +50,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useRoles } from "@/hooks/use-role";
 import { STATUS_FLOW, STATUS_LABEL, STORE } from "@/lib/pricing";
 import { cleanOldStorage } from "@/lib/admin.functions";
-import { printOrderTicket } from "@/lib/qz-print";
+import { printOrderTicket, openOrderDocuments } from "@/lib/qz-print";
 import { useCustomers, customerLabel } from "@/hooks/use-customers";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -154,6 +154,19 @@ function AdminPage() {
             icon: <Bell className="size-4" />,
           });
           queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "files" },
+        async (payload) => {
+          const f = payload.new as any;
+          if (f.order_id) return;
+          playPing();
+          const { data: p } = await supabase.from("profiles").select("full_name, phone, email").eq("id", f.user_id).maybeSingle();
+          const who = p?.full_name || p?.email || "A customer";
+          toast.info(`${who}${p?.phone ? ` (${p.phone})` : ""} sent a file: ${f.name}`, { icon: <Bell className="size-4" /> });
+          queryClient.invalidateQueries();
         }
       )
       .subscribe();
@@ -887,6 +900,7 @@ function PrintTicketButton({ order }: { order: Order }) {
   const [busy, setBusy] = useState(false);
   if (!user) return null;
   return (
+    <>
     <Button
       variant="soft"
       className="w-full"
@@ -902,6 +916,17 @@ function PrintTicketButton({ order }: { order: Order }) {
       <Printer className="size-4" />
       {busy ? "Connecting to printer…" : "Print ticket"}
     </Button>
+    <Button
+      variant="hero"
+      className="w-full mt-2"
+      onClick={async () => {
+        const r = await openOrderDocuments(order.id);
+        r.ok ? toast.success(r.message) : toast.error(r.message);
+      }}
+    >
+      <Printer className="size-4" /> Open / print document
+    </Button>
+    </>
   );
 }
 

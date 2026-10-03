@@ -15,6 +15,7 @@ import {
   X,
   PenLine,
   FilePlus2,
+  Upload,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -118,6 +119,27 @@ function VaultPage() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["folders", user?.id] }),
   });
 
+  const uploadFiles = useMutation({
+    mutationFn: async (list: File[]) => {
+      if (!user) throw new Error("Not signed in");
+      const folderId = selectedFolder === "all" ? null : selectedFolder;
+      for (const file of list) {
+        const path = `${user.id}/vault/${Date.now()}-${file.name.replace(/[^\w.\-]+/g, "_")}`;
+        const up = await supabase.storage.from("print-files").upload(path, file, { contentType: file.type });
+        if (up.error) throw up.error;
+        const { error } = await supabase.from("files").insert({
+          user_id: user.id, folder_id: folderId, name: file.name, url: path, size: file.size, type: file.type || null,
+        });
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      toast.success("Sent! The shop has been notified.");
+      queryClient.invalidateQueries({ queryKey: ["files", user?.id] });
+    },
+    onError: () => toast.error("Upload failed. Please try again."),
+  });
+
   const deleteFile = useMutation({
     mutationFn: async (file: FileRow) => {
       await supabase.storage.from("print-files").remove([file.url]);
@@ -174,6 +196,21 @@ function VaultPage() {
           <div className="flex gap-2">
             <Button variant="outline" onClick={() => seedFolders.mutate()} disabled={seedFolders.isPending}>
               <Plus className="size-4" /> Add default folders
+            </Button>
+            <Button variant="outline" asChild disabled={uploadFiles.isPending}>
+              <label className="cursor-pointer">
+                <Upload className="size-4" /> {uploadFiles.isPending ? "Sending…" : "Send files to shop"}
+                <input
+                  type="file"
+                  multiple
+                  className="hidden"
+                  onChange={(e) => {
+                    const l = Array.from(e.target.files ?? []);
+                    e.target.value = "";
+                    if (l.length) uploadFiles.mutate(l);
+                  }}
+                />
+              </label>
             </Button>
             <Button variant="hero" asChild>
               <Link to="/order">

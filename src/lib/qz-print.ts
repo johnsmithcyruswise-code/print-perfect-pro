@@ -19,12 +19,46 @@ export type OrderTicket = {
   customer_name?: string | null;
   customer_phone?: string | null;
   customer_email?: string | null;
+  attached_files?: string[];
 };
+
+async function orderFileList(orderId: string): Promise<{ name: string; path: string }[]> {
+  const [a, b] = await Promise.all([
+    supabase.from("order_files").select("file_name, file_path").eq("order_id", orderId),
+    supabase.from("files").select("name, url").eq("order_id", orderId),
+  ]);
+  const out = new Map<string, string>();
+  for (const f of a.data ?? []) out.set(f.file_path, f.file_name);
+  for (const f of b.data ?? []) if (!out.has(f.url)) out.set(f.url, f.name);
+  return [...out].map(([path, name]) => ({ path, name }));
+}
+
+/** Opens every document attached to an order in new tabs, ready to print. */
+export async function openOrderDocuments(orderId: string): Promise<{ ok: boolean; message: string }> {
+  const list = await orderFileList(orderId);
+  if (list.length === 0) return { ok: false, message: "No document attached to this order." };
+  const tabs = list.map(() => window.open("about:blank", "_blank"));
+  let opened = 0;
+  await Promise.all(
+    list.map(async (f, i) => {
+      const { data } = await supabase.storage.from("print-files").createSignedUrl(f.path, 600);
+      const tab = tabs[i];
+      if (data?.signedUrl) {
+        if (tab) tab.location.href = data.signedUrl;
+        else window.open(data.signedUrl, "_blank");
+        opened++;
+      } else tab?.close();
+    }),
+  );
+  return opened ? { ok: true, message: `Opened ${opened} document(s) — press Ctrl+P to print.` } : { ok: false, message: "Could not open the document." };
+}
 
 const esc = (v: unknown) =>
   String(v ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
 
 async function withCustomer(order: OrderTicket): Promise<OrderTicket> {
+  const files = (await orderFileList(order.id)).map((f) => f.name);
+  order = { ...order, attached_files: files };
   if (order.customer_name || order.customer_phone) return order;
   const { data } = await supabase
     .from("profiles")
@@ -97,6 +131,7 @@ function orderTicketHtml(order: OrderTicket): string {
     `<p><strong>Binding:</strong> ${order.binding}</p>`,
     `<p><strong>Turnaround:</strong> ${order.turnaround}</p>`,
     order.customer_notes ? `<p><strong>Customer says:</strong> ${esc(order.customer_notes)}</p>` : "",
+    order.attached_files?.length ? `<p><strong>Attached:</strong> ${order.attached_files.map(esc).join(", ")}</p>` : "",
     order.staff_notes ? `<p><strong>Notes:</strong> ${esc(order.staff_notes)}</p>` : "",
     `<p style="font-size:10px;color:#666">Ref ${esc(order.order_number)}</p>`,
     `<p style="font-size:10px;color:#666">Printed ${new Date().toLocaleString()}</p>`,
