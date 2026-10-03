@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1791049836738,
+      "tag": "0000_files_realtime",
+      "breakpoints": true
+    }
+  ]
+}
