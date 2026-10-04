@@ -160,7 +160,7 @@ function Index() {
         <div>
           <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
             className="text-5xl sm:text-6xl font-black tracking-tight text-foreground leading-[1.05]">
-            Drop it.<br /><span className="text-primary">We print it.</span><br /><span className="text-secondary">You collect.</span>
+            Drop it.<br /><span className="text-primary">We print it.</span><br /><span className="text-accent">You collect.</span>
           </motion.h1>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="mt-4 text-lg text-muted-foreground max-w-md">
             Faster than WhatsApp. Your file goes straight to our printer — full quality, ready before you walk in.
