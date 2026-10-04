@@ -80,8 +80,8 @@ function DropZone() {
 
   async function submit() {
     if (!file) return;
-    if (file.size > 20 * 1024 * 1024) return toast.error("File too big (max 20MB).");
-    if (!name.trim() || phone.trim().length < 7) return toast.error("Enter your name and phone.");
+    if (file.size > 20 * 1024 * 1024) { toast.error("File too big (max 20MB)."); return; }
+    if (!name.trim() || phone.trim().length < 7) { toast.error("Enter your name and phone."); return; }
     setBusy(true);
     try {
       const r = await send({ data: { name, phone, fileName: file.name, contentType: file.type, base64: await toB64(file) } });
