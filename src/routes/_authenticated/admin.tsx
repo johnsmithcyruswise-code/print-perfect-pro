@@ -50,7 +50,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useRoles } from "@/hooks/use-role";
 import { STATUS_FLOW, STATUS_LABEL, STORE } from "@/lib/pricing";
 import { cleanOldStorage } from "@/lib/admin.functions";
-import { printOrderTicket, openOrderDocuments } from "@/lib/qz-print";
+import { printOrderTicket, printOrderDocuments } from "@/lib/qz-print";
 import { useCustomers, customerLabel } from "@/hooks/use-customers";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -902,29 +902,30 @@ function PrintTicketButton({ order }: { order: Order }) {
   return (
     <>
     <Button
-      variant="soft"
+      variant="hero"
+      size="lg"
       className="w-full"
+      onClick={async () => {
+        const r = await printOrderDocuments(order.id);
+        r.ok ? toast.success(r.message) : toast.error(r.message);
+      }}
+    >
+      <Printer className="size-5" /> Print customer document
+    </Button>
+    <Button
+      variant="ghost"
+      size="sm"
+      className="w-full mt-2"
       disabled={busy}
       onClick={async () => {
         setBusy(true);
         const result = await printOrderTicket(order, user.id);
         setBusy(false);
-        if (result.ok) toast.success(result.message);
-        else toast.error(result.message);
+        result.ok ? toast.success(result.message) : toast.error(result.message);
       }}
     >
       <Printer className="size-4" />
-      {busy ? "Connecting to printer…" : "Print ticket"}
-    </Button>
-    <Button
-      variant="hero"
-      className="w-full mt-2"
-      onClick={async () => {
-        const r = await openOrderDocuments(order.id);
-        r.ok ? toast.success(r.message) : toast.error(r.message);
-      }}
-    >
-      <Printer className="size-4" /> Open / print document
+      {busy ? "Connecting…" : "Optional: print collection slip"}
     </Button>
     </>
   );
