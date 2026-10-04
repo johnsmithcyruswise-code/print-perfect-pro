@@ -18,7 +18,7 @@ import { SiteHeader } from "@/components/site-header";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { useRoles } from "@/hooks/use-role";
-import { printOrderTicket, openOrderDocuments, type OrderTicket } from "@/lib/qz-print";
+import { printOrderTicket, printOrderDocuments, type OrderTicket } from "@/lib/qz-print";
 import { STATUS_LABEL } from "@/lib/pricing";
 import { useCustomers, customerLabel } from "@/hooks/use-customers";
 
@@ -266,16 +266,16 @@ function AutoPrintStation() {
                     res.ok ? toast.success(res.message) : toast.error(res.message);
                   }}
                 >
-                  <PrinterIcon className="size-4" /> Print ticket
+                  <PrinterIcon className="size-4" /> Slip
                 </Button>
                 <Button
-                  variant="outline"
+                  variant="hero"
                   onClick={async () => {
-                    const r = await openOrderDocuments(job.id);
+                    const r = await printOrderDocuments(job.id);
                     r.ok ? toast.success(r.message) : toast.error(r.message);
                   }}
                 >
-                  <PrinterIcon className="size-4" /> Document
+                  <PrinterIcon className="size-4" /> Print document
                 </Button>
                 <Button
                   variant="hero"

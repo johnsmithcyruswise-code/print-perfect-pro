@@ -200,3 +200,31 @@ async function logPrint(
   });
   if (error) console.error("[print log]", error);
 }
+
+/** Print a stored file straight to the printer dialog (no new tab, no ticket). */
+export async function printStoredFile(path: string): Promise<boolean> {
+  const { data } = await supabase.storage.from("print-files").download(path);
+  if (!data) return false;
+  const lower = path.toLowerCase();
+  const url = URL.createObjectURL(data);
+  const frame = document.createElement("iframe");
+  frame.style.cssText = "position:fixed;right:0;bottom:0;width:0;height:0;border:0";
+  if (/\.(png|jpe?g|webp|gif)$/.test(lower) || data.type.startsWith("image/")) {
+    frame.srcdoc = `<html><body style="margin:0;display:flex;justify-content:center"><img src="${url}" style="max-width:100%;max-height:100vh" onload="setTimeout(()=>print(),200)"></body></html>`;
+    document.body.appendChild(frame);
+  } else {
+    frame.src = url;
+    frame.onload = () => setTimeout(() => { try { frame.contentWindow?.focus(); frame.contentWindow?.print(); } catch { window.open(url, "_blank"); } }, 400);
+    document.body.appendChild(frame);
+  }
+  setTimeout(() => { frame.remove(); URL.revokeObjectURL(url); }, 120000);
+  return true;
+}
+
+export async function printOrderDocuments(orderId: string): Promise<{ ok: boolean; message: string }> {
+  const list = await orderFileList(orderId);
+  if (list.length === 0) return { ok: false, message: "No document attached to this order." };
+  let n = 0;
+  for (const f of list) if (await printStoredFile(f.path)) n++;
+  return n ? { ok: true, message: `Sending ${n} document(s) to the printer…` } : { ok: false, message: "Could not load the document." };
+}
