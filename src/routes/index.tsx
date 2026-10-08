@@ -18,6 +18,7 @@ import { SplashScreen } from "@/components/splash";
 import { BrandLogo } from "@/components/brand-logo";
 import { STORE, telHref } from "@/lib/pricing";
 import heroVideo from "@/assets/pk-hero.mp4.asset.json";
+import heroVideoWebm from "@/assets/pk-hero.webm.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -188,13 +189,15 @@ function Landing() {
             >
               <video
                 className="aspect-video w-full object-cover"
-                src={heroVideo.url}
                 poster="/hero-poster.jpg"
                 autoPlay
                 muted
                 loop
                 playsInline
-              />
+              >
+                <source src={heroVideoWebm.url} type="video/webm" />
+                <source src={heroVideo.url} type="video/mp4" />
+              </video>
               {/* left-edge fade so the media blends into the page */}
               <div className="from-background pointer-events-none absolute inset-y-0 left-0 w-20 bg-gradient-to-r to-transparent" />
               {/* 2% grain */}
