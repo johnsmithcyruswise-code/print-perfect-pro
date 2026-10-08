@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Package, Plus, Clock, CheckCircle2, Wallet, Search, RotateCcw, XCircle } from "lucide-react";
+import { Package, Plus, Clock, CheckCircle2, Wallet, Search, RotateCcw, XCircle, UploadCloud, FileText } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -124,9 +124,11 @@ function Dashboard() {
         <LocationConsent />
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-extrabold tracking-tight">Your print jobs</h1>
+            <h1 className="text-3xl font-extrabold tracking-tight">
+              What are we printing today?
+            </h1>
             <p className="text-muted-foreground mt-1 text-sm">
-              Everything you've sent to the PK press floor.
+              Drop a file below and it goes straight to the counter.
             </p>
           </div>
           <Button variant="hero" size="lg" asChild>
@@ -135,6 +137,8 @@ function Dashboard() {
             </Link>
           </Button>
         </div>
+
+        {user && <QuickDrop userId={user.id} />}
 
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           <Stat icon={Clock} label="In production" value={String(active.length)} />
@@ -253,6 +257,120 @@ function Dashboard() {
           })}
         </section>
       </main>
+    </div>
+  );
+}
+
+function QuickDrop({ userId }: { userId: string }) {
+  const queryClient = useQueryClient();
+  const input = useRef<HTMLInputElement>(null);
+  const [over, setOver] = useState(false);
+
+  const upload = useMutation({
+    mutationFn: async (list: File[]) => {
+      for (const file of list) {
+        const path = `${userId}/vault/${Date.now()}-${file.name.replace(/[^\w.\-]+/g, "_")}`;
+        const up = await supabase.storage
+          .from("print-files")
+          .upload(path, file, { contentType: file.type });
+        if (up.error) throw up.error;
+        const { error } = await supabase.from("files").insert({
+          user_id: userId,
+          folder_id: null,
+          name: file.name,
+          url: path,
+          size: file.size,
+          type: file.type || null,
+        });
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      toast.success("Sent! The shop has been notified.");
+      queryClient.invalidateQueries({ queryKey: ["files", userId] });
+    },
+    onError: () => toast.error("Upload failed. Please try again."),
+  });
+
+  const { data: recent } = useQuery({
+    queryKey: ["files", userId, "recent"],
+    enabled: !!userId,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("files")
+        .select("id, name, uploaded_at")
+        .eq("user_id", userId)
+        .order("uploaded_at", { ascending: false })
+        .limit(3);
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const send = (list: File[]) => {
+    if (list.length) upload.mutate(list);
+  };
+
+  return (
+    <div
+      onDragOver={(e) => {
+        e.preventDefault();
+        setOver(true);
+      }}
+      onDragLeave={() => setOver(false)}
+      onDrop={(e) => {
+        e.preventDefault();
+        setOver(false);
+        send(Array.from(e.dataTransfer.files));
+      }}
+      className={`glass-card mt-8 rounded-3xl border-2 border-dashed p-10 text-center transition-colors ${
+        over ? "border-accent bg-accent/5" : "border-primary/30"
+      }`}
+    >
+      <UploadCloud className="text-primary mx-auto size-10" />
+      <p className="mt-3 text-lg font-extrabold">Drop files for the counter</p>
+      <p className="text-muted-foreground mt-1 text-sm">
+        PDF, Word, photos — sent straight to the shop at full quality.
+      </p>
+      <Button
+        variant="hero"
+        size="lg"
+        className="mt-5"
+        disabled={upload.isPending}
+        onClick={() => input.current?.click()}
+      >
+        {upload.isPending ? "Sending…" : "Choose files"}
+      </Button>
+      <input
+        ref={input}
+        type="file"
+        multiple
+        hidden
+        onChange={(e) => {
+          send(Array.from(e.target.files ?? []));
+          e.target.value = "";
+        }}
+      />
+
+      <div className="mt-6 border-t pt-4">
+        <p className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
+          Recent files
+        </p>
+        {recent && recent.length > 0 ? (
+          <ul className="mt-2 space-y-1">
+            {recent.map((f) => (
+              <li key={f.id} className="flex items-center justify-center gap-2 text-sm">
+                <FileText className="text-muted-foreground size-3.5 shrink-0" />
+                <span className="min-w-0 truncate">{f.name}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-muted-foreground mt-2 text-xs">
+            No uploads yet — your first one will show up here.
+          </p>
+        )}
+      </div>
     </div>
   );
 }
