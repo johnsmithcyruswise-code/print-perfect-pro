@@ -106,15 +106,6 @@ function Landing() {
 
       {/* ── Hero ── */}
       <section className="relative flex min-h-[90vh] items-center overflow-hidden pt-20 pb-16">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(ellipse 70% 60% at 50% 40%, transparent 45%, color-mix(in oklch, var(--brand) 7%, transparent) 100%)",
-          }}
-        />
-
         <div className="relative mx-auto grid w-full max-w-6xl items-center gap-12 px-4 sm:px-8 lg:grid-cols-[45fr_55fr] lg:gap-16">
           {/* Left: text */}
           <motion.div
@@ -185,7 +176,7 @@ function Landing() {
             <motion.div
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="relative overflow-hidden rounded-3xl shadow-[0_24px_70px_-18px_oklch(0.19_0.03_282/0.25)]"
+              className="relative overflow-hidden rounded-3xl border-8 border-card shadow-clay"
             >
               <video
                 className="aspect-video w-full object-cover"
@@ -198,8 +189,6 @@ function Landing() {
                 <source src={heroVideoWebm.url} type="video/webm" />
                 <source src={heroVideo.url} type="video/mp4" />
               </video>
-              {/* left-edge fade so the media blends into the page */}
-              <div className="from-background pointer-events-none absolute inset-y-0 left-0 w-20 bg-gradient-to-r to-transparent" />
               {/* 2% grain */}
               <div
                 aria-hidden
@@ -268,7 +257,7 @@ function Landing() {
         <div className="mx-auto max-w-6xl px-4 sm:px-8">
           <motion.div
             {...fadeUp}
-            className="glass-card mx-auto max-w-2xl rounded-3xl p-8 text-center"
+            className="mx-auto max-w-2xl py-8 text-center"
           >
             <div className="flex items-center justify-center gap-2">
               <span className="relative flex size-3">

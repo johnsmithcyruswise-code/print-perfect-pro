@@ -30,7 +30,6 @@ export function SplashScreen() {
       role="status"
       aria-label="Loading Planned Kid Computer Services"
     >
-      <div className="bg-primary/20 pointer-events-none absolute size-[32rem] rounded-full blur-[140px]" />
       <div className="relative flex flex-col items-center">
         <img
           src="/logo.png"
@@ -41,7 +40,7 @@ export function SplashScreen() {
           className="w-72 max-w-[80vw]"
         />
         <div className="bg-border mt-10 h-1 w-56 overflow-hidden rounded-full">
-          <div className="gradient-brand h-full animate-[splash-bar_2.4s_ease-in-out_forwards]" />
+          <div className="bg-primary h-full animate-[splash-bar_2.4s_ease-in-out_forwards]" />
         </div>
         <p className="text-muted-foreground mt-6 text-xs tracking-[0.3em] uppercase">
           Upload · Create · Collect
