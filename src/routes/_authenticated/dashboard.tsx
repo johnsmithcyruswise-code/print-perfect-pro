@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Package, Plus, Clock, CheckCircle2, Wallet, Search, RotateCcw, XCircle, UploadCloud, FileText } from "lucide-react";
+import { Package, Plus, Clock, CheckCircle2, Wallet, Search, RotateCcw, XCircle, UploadCloud, FileText, IdCard, Type, PenLine, FolderOpen } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,16 +13,20 @@ import { LocationConsent } from "@/components/location-consent";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { STATUS_FLOW, STATUS_LABEL } from "@/lib/pricing";
+import { NotificationBell } from "@/components/notification-bell";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
+  validateSearch: (search: Record<string, unknown>): { tab?: "main" | "follow-up" } => ({
+    tab: search["tab"] === "follow-up" ? "follow-up" : "main",
+  }),
   head: () => ({
     meta: [
-      { title: "My orders — Planned Kid Computer Services" },
+      { title: "Main & Follow up — Planned Kid Computer Services" },
       {
         name: "description",
-        content: "Track your print jobs, quotes and pickup status at Planned Kid Computer Services.",
+        content: "Send documents, open your tools, and follow your print jobs at Planned Kid Computer Services.",
       },
-      { property: "og:title", content: "My orders — Planned Kid Computer Services" },
+      { property: "og:title", content: "Main & Follow up — Planned Kid Computer Services" },
       { property: "og:description", content: "Track your print jobs and pickup status." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -32,6 +36,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 });
 
 function Dashboard() {
+  const { tab } = Route.useSearch();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
@@ -40,10 +45,11 @@ function Dashboard() {
     queryKey: ["orders", user?.id],
     enabled: !!user,
     queryFn: async () => {
+      if (!user) return [];
       const { data, error } = await supabase
         .from("orders")
         .select("*")
-        .eq("user_id", user!.id)
+        .eq("user_id", user.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
@@ -122,10 +128,12 @@ function Dashboard() {
       <SiteHeader />
       <main className="mx-auto max-w-6xl px-4 py-10">
         <LocationConsent />
+        {tab === "main" ? (
+        <>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="text-3xl font-extrabold tracking-tight">
-              What are we printing today?
+              Main
             </h1>
             <p className="text-muted-foreground mt-1 text-sm">
               Drop a file below and it goes straight to the counter.
@@ -139,7 +147,20 @@ function Dashboard() {
         </div>
 
         {user && <QuickDrop userId={user.id} />}
-
+        <div className="mt-8 flex flex-wrap gap-3">
+          <Button asChild variant="outline"><Link to="/documents"><FolderOpen /> My files</Link></Button>
+          <Button asChild variant="outline"><Link to="/editor" search={{ id: "" }}><PenLine /> Write a document</Link></Button>
+          <Button asChild variant="outline"><Link to="/text-editor"><Type /> Quick text</Link></Button>
+          <Button asChild variant="outline"><Link to="/id-photo"><IdCard /> ID photos</Link></Button>
+          <Button asChild variant="outline"><Link to="/passport"><IdCard /> Passport order</Link></Button>
+        </div>
+        </>
+        ) : (
+        <>
+        <div className="flex items-center justify-between gap-4">
+          <h1 className="text-3xl font-extrabold">Follow up</h1>
+          <NotificationBell />
+        </div>
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           <Stat icon={Clock} label="In production" value={String(active.length)} />
           <Stat icon={CheckCircle2} label="Completed" value={String(done.length)} />
@@ -256,6 +277,8 @@ function Dashboard() {
             );
           })}
         </section>
+        </>
+        )}
       </main>
     </div>
   );

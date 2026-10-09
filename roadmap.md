@@ -1,0 +1,4 @@
+- [ ] Simplify customer navigation to Main and Follow up, preserving staff navigation.
+- [ ] Keep uploads/tools in Main and tracking in Follow up.
+- [ ] Verify signed-in navigation and both views.
+- [ ] Make the existing printer video a full-page landing background with minimal customer information and a large Start button.

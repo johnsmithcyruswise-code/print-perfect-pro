@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   LogOut,
   LayoutDashboard,
@@ -8,6 +8,9 @@ import {
   Settings,
   IdCard,
   Type,
+  Home,
+  Clock,
+  CircleUserRound,
 } from "lucide-react";
 import { BrandLogo } from "@/components/brand-logo";
 import { useQueryClient } from "@tanstack/react-query";
@@ -16,6 +19,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useRoles } from "@/hooks/use-role";
 import { supabase } from "@/integrations/supabase/client";
 import { NotificationBell } from "@/components/notification-bell";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 
 export function SiteHeader() {
@@ -23,6 +27,7 @@ export function SiteHeader() {
   const { isStaff, isAdmin } = useRoles();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const followUp = useRouterState({ select: (state) => state.location.pathname === "/dashboard" && state.location.search.tab === "follow-up" });
 
   async function signOut() {
     await queryClient.cancelQueries();
@@ -38,9 +43,33 @@ export function SiteHeader() {
           <BrandLogo />
         </Link>
 
-        <nav className="flex flex-wrap items-center justify-end gap-1 sm:gap-2">
+        <nav aria-label="App navigation" className="flex flex-wrap items-center justify-end gap-1 sm:gap-2">
           {!loading && user ? (
             <>
+              {!isStaff ? (
+                <>
+                  <Button asChild variant={!followUp ? "default" : "ghost"} size="sm">
+                    <Link to="/dashboard" search={{ tab: "main" }} aria-current={!followUp ? "page" : undefined}>
+                      <Home /> Main
+                    </Link>
+                  </Button>
+                  <Button asChild variant={followUp ? "default" : "ghost"} size="sm">
+                    <Link to="/dashboard" search={{ tab: "follow-up" }} aria-current={followUp ? "page" : undefined}>
+                      <Clock /> Follow up
+                    </Link>
+                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" aria-label="Account"><CircleUserRound /></Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem asChild><Link to="/settings"><Settings /> Settings</Link></DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => void signOut()}><LogOut /> Sign out</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </>
+              ) : (
+              <>
               {isStaff && (
                 <Button asChild variant="ghost" size="sm">
                   <Link to="/admin">
@@ -87,7 +116,8 @@ export function SiteHeader() {
               <Button variant="ghost" size="icon" onClick={signOut} aria-label="Sign out">
                 <LogOut />
               </Button>
-
+              </>
+              )}
             </>
           ) : (
             <>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Bell } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,6 +16,7 @@ export function NotificationBell() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
+  const instanceId = useId();
 
   const { data: notifications = [] } = useQuery({
     queryKey: ["notifications", user?.id],
@@ -34,7 +35,7 @@ export function NotificationBell() {
   useEffect(() => {
     if (!user) return;
     const channel = supabase
-      .channel("user-notifications")
+      .channel(`user-notifications:${user.id}:${instanceId}`)
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` },
@@ -44,7 +45,7 @@ export function NotificationBell() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user, queryClient]);
+  }, [user, queryClient, instanceId]);
 
   const markRead = useMutation({
     mutationFn: async (id: string) => {
