@@ -10,3 +10,4 @@
 <!-- LOVABLE:END -->
 
 - Keep the visual theme centralized in `src/styles.css` and shared Button/Card variants so every workspace inherits visual updates without changing workflows.
+- Use the dashboard's validated `tab` search parameter for customer Main/Follow up navigation; keep existing tool URLs and staff navigation intact to preserve links and workflows.
