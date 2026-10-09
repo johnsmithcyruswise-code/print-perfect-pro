@@ -16,8 +16,8 @@ import { STATUS_FLOW, STATUS_LABEL } from "@/lib/pricing";
 import { NotificationBell } from "@/components/notification-bell";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
-  validateSearch: (search: Record<string, unknown>): { tab: "main" | "follow-up" } => ({
-    tab: search.tab === "follow-up" ? "follow-up" : "main",
+  validateSearch: (search: Record<string, unknown>): { tab?: "main" | "follow-up" } => ({
+    tab: search["tab"] === "follow-up" ? "follow-up" : "main",
   }),
   head: () => ({
     meta: [
@@ -149,7 +149,7 @@ function Dashboard() {
         {user && <QuickDrop userId={user.id} />}
         <div className="mt-8 flex flex-wrap gap-3">
           <Button asChild variant="outline"><Link to="/documents"><FolderOpen /> My files</Link></Button>
-          <Button asChild variant="outline"><Link to="/editor"><PenLine /> Write a document</Link></Button>
+          <Button asChild variant="outline"><Link to="/editor" search={{ id: "" }}><PenLine /> Write a document</Link></Button>
           <Button asChild variant="outline"><Link to="/text-editor"><Type /> Quick text</Link></Button>
           <Button asChild variant="outline"><Link to="/id-photo"><IdCard /> ID photos</Link></Button>
           <Button asChild variant="outline"><Link to="/passport"><IdCard /> Passport order</Link></Button>
