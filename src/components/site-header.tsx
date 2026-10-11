@@ -63,6 +63,7 @@ export function SiteHeader() {
                       <Button variant="ghost" size="icon" aria-label="Account"><CircleUserRound /></Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
+                      <DropdownMenuItem asChild><Link to="/admin/login"><ShieldCheck /> Admin sign in</Link></DropdownMenuItem>
                       <DropdownMenuItem asChild><Link to="/settings"><Settings /> Settings</Link></DropdownMenuItem>
                       <DropdownMenuItem onSelect={() => void signOut()}><LogOut /> Sign out</DropdownMenuItem>
                     </DropdownMenuContent>
@@ -73,7 +74,7 @@ export function SiteHeader() {
               {isStaff && (
                 <Button asChild variant="ghost" size="sm">
                   <Link to="/admin">
-                    <ShieldCheck /> Staff
+                    <ShieldCheck /> Admin
                   </Link>
                 </Button>
               )}
