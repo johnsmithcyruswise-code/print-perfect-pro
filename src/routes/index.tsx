@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, MapPin } from "lucide-react";
+import { ArrowRight, MapPin, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InstallAppButton } from "@/components/install-app";
 import { BrandLogo } from "@/components/brand-logo";
 import { useAuth } from "@/hooks/use-auth";
+import { useRoles } from "@/hooks/use-role";
 import heroVideo from "@/assets/pk-hero.mp4.asset.json";
 import heroVideoWebm from "@/assets/pk-hero.webm.asset.json";
 
@@ -23,6 +24,7 @@ export const Route = createFileRoute("/")({
 
 function Landing() {
   const { user } = useAuth();
+  const { isStaff } = useRoles();
   return (
     <div className="relative isolate flex min-h-svh flex-col overflow-hidden bg-background text-cover-foreground">
       <video aria-hidden="true" className="absolute inset-0 -z-20 h-full w-full object-cover object-[65%_center]" poster="/hero-poster.jpg" autoPlay muted loop playsInline>
@@ -32,7 +34,12 @@ function Landing() {
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-cover-overlay" />
       <header className="flex items-center justify-between gap-4 px-6 py-6 sm:px-10">
         <Link to="/" aria-label="Planned Kid home"><BrandLogo className="h-12 rounded-lg bg-card p-1" /></Link>
-        <InstallAppButton />
+        <div className="flex items-center gap-2">
+          <InstallAppButton />
+          <Button asChild variant="secondary" size="sm">
+            <Link to={isStaff ? "/admin" : "/admin/login"}><ShieldCheck /> Admin</Link>
+          </Button>
+        </div>
       </header>
       <main className="mx-auto flex w-full max-w-6xl flex-1 items-center px-6 py-16 sm:px-10">
         <div className="max-w-xl">
