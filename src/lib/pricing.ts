@@ -174,9 +174,9 @@ export const STORE = {
   name: "Planned Kid Computer Services",
   tagline: "We plan, you collect.",
   address: "4GVW+2H5, Entebbe, Uganda",
-  phone: "0772398397",
+  phone: "0772398398",
   phone2: "0758724969",
-  whatsapp: "0772398397",
+  whatsapp: "0772398398",
   email: "mzedi2012@gmail.com",
   hours: "Mon–Fri · 8:00 – 18:00",
   hoursList: [
