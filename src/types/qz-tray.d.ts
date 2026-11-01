@@ -4,6 +4,7 @@ declare module "qz-tray" {
   }
   const qz: {
     websocket: {
+      isActive: () => boolean;
       connect: () => Promise<void>;
       disconnect: () => Promise<void>;
     };
@@ -11,9 +12,9 @@ declare module "qz-tray" {
       find: () => Promise<string[]>;
     };
     configs: {
-      create: (printer?: string | null) => QZConfig;
+      create: (printer?: string | null, options?: { copies: number; size: { width: number; height: number }; units: string; colorType: string }) => QZConfig;
     };
-    print: (config: QZConfig, data: Array<{ type: string; format?: string; data: string }>) => Promise<void>;
+    print: (config: QZConfig, data: Array<{ type: string; format?: string; flavor?: string; data: string }>) => Promise<void>;
   };
   export default qz;
 }

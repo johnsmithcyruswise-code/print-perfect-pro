@@ -1,4 +1,3 @@
-- [x] Simplify customer navigation to Main and Follow up, preserving staff navigation.
-- [x] Keep uploads/tools in Main and tracking in Follow up.
-- [x] Verify signed-in navigation and both views.
-- [x] Make the existing printer video a full-page landing background with minimal customer information and a large Start button.
+- [ ] Build Bazz landing and cookie-based guest print flow, with no online prices.
+- [ ] Store guest documents privately in customer-named folders and add staff order panel.
+- [ ] Connect actual document printing to QZ Tray and verify guest submission/status changes.

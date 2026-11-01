@@ -18,6 +18,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         hero: "bg-primary text-primary-foreground shadow-clay-button hover:bg-primary/90 active:translate-y-px",
         brand: "bg-brand text-brand-foreground shadow-clay-button hover:bg-brand/90",
+        success: "bg-success text-success-foreground shadow-clay-button hover:bg-success/90",
         soft: "bg-secondary text-secondary-foreground hover:bg-accent",
       },
       size: {
