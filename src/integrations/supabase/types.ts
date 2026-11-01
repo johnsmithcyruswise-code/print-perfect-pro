@@ -201,6 +201,51 @@ export type Database = {
         }
         Relationships: []
       }
+      guest_print_orders: {
+        Row: {
+          color_mode: string
+          content_type: string
+          created_at: string
+          customer_name: string
+          customer_phone: string
+          file_name: string
+          file_path: string
+          id: string
+          order_number: string
+          paper_size: string
+          quantity: number
+          status: string
+        }
+        Insert: {
+          color_mode: string
+          content_type: string
+          created_at?: string
+          customer_name: string
+          customer_phone: string
+          file_name: string
+          file_path: string
+          id?: string
+          order_number?: string
+          paper_size: string
+          quantity: number
+          status?: string
+        }
+        Update: {
+          color_mode?: string
+          content_type?: string
+          created_at?: string
+          customer_name?: string
+          customer_phone?: string
+          file_name?: string
+          file_path?: string
+          id?: string
+          order_number?: string
+          paper_size?: string
+          quantity?: number
+          status?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           created_at: string
