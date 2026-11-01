@@ -2,6 +2,10 @@
 // Never registers in dev, inside an iframe, in Lovable preview hosts, or with ?sw=off.
 const SW_URL = "/sw.js";
 
+const PREVIEW_LABEL = /^(?:id-preview|preview)(?:-[a-z0-9]+)?--.+$/;
+const PREVIEW_HOSTS = [".lovable.app", ".gpt-eng.com", ".gptengineer.run"];
+const DEV_HOST_LABEL = "project--65b7e622-3326-4890-ba37-1d251457460f-dev";
+
 function isBlockedContext(): boolean {
   if (!import.meta.env.PROD) return true;
   if (typeof window === "undefined") return true;
@@ -10,8 +14,12 @@ function isBlockedContext(): boolean {
   } catch {
     return true;
   }
-  const host = window.location.hostname;
-  if (host.startsWith("id-preview--") || host.startsWith("preview--")) return true;
+  const host = window.location.hostname.toLowerCase();
+  const firstLabel = host.split(".")[0] ?? "";
+  if (PREVIEW_HOSTS.some((suffix) => host.endsWith(suffix))) {
+    if (PREVIEW_LABEL.test(firstLabel)) return true;
+    if (firstLabel === DEV_HOST_LABEL) return true;
+  }
   if (host === "lovableproject.com" || host.endsWith(".lovableproject.com")) return true;
   if (host === "lovableproject-dev.com" || host.endsWith(".lovableproject-dev.com")) return true;
   if (host === "beta.lovable.dev" || host.endsWith(".beta.lovable.dev")) return true;
