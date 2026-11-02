@@ -1,0 +1,32 @@
+import { useState } from "react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Download, FolderOpen, LogOut, Printer, RefreshCw } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { listGuestPrints } from "@/lib/bazz-print.functions";
+import { PRINT_STATUSES, STATUS_NAMES } from "@/lib/bazz-print";
+import { connectPrintStation, printCustomerFile } from "@/lib/bazz-qz";
+import { supabase } from "@/integrations/supabase/client";
+
+export function BazzStaffPanel() {
+  const list = useServerFn(listGuestPrints); const queryClient = useQueryClient(); const navigate = useNavigate();
+  const orders = useQuery({ queryKey: ["bazz-staff-orders"], queryFn: () => list(), refetchInterval: 10000 });
+  const [filter, setFilter] = useState("all"); const [printers, setPrinters] = useState<string[]>([]); const [printer, setPrinter] = useState("");
+  const [connecting, setConnecting] = useState(false); const [working, setWorking] = useState<string | null>(null);
+  async function connect() { setConnecting(true); try { const found = await connectPrintStation(); setPrinters(found); setPrinter(found[0] ?? ""); toast.success(found.length ? "Printer connected" : "No printers found"); } catch { toast.error("Open QZ Tray on the shop computer, then connect again."); } finally { setConnecting(false); } }
+  async function status(id: string, next: string) { setWorking(id); try { const { error } = await supabase.from("guest_print_orders").update({ status: next }).eq("id", id).select("id").single(); if (error) throw error; await orders.refetch(); } catch { toast.error("Status could not be changed."); } finally { setWorking(null); } }
+  async function open(path: string) { const tab = window.open("about:blank", "_blank"); const { data, error } = await supabase.storage.from("print-files").createSignedUrl(path, 600); if (error || !data) { tab?.close(); toast.error("File could not be opened."); return; } if (tab) { tab.opener = null; tab.location.href = data.signedUrl; } else toast.error("Allow popups to open the file."); }
+  const filtered = (orders.data ?? []).filter((o) => filter === "all" || o.status === filter);
+  const groups = new Map<string, typeof filtered>();
+  for (const order of filtered) { const key = `${order.customer_name} · ${order.customer_phone}`; groups.set(key, [...(groups.get(key) ?? []), order]); }
+  return <div className="min-h-svh bg-background"><header className="border-b bg-card"><div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-5 py-5"><Link to="/" className="flex items-center gap-3 text-lg font-bold"><Printer className="text-primary" />Bazz · Staff</Link><div className="flex items-center gap-3"><ThemeToggle /><Button variant="outline" size="icon" className="size-12" aria-label="Sign out" title="Sign out" onClick={async () => { await queryClient.cancelQueries(); queryClient.clear(); await supabase.auth.signOut(); navigate({ to: "/admin/login" }); }}><LogOut /></Button></div></div></header>
+    <main className="mx-auto max-w-5xl px-5 py-8"><div className="mb-6 flex flex-wrap items-center justify-between gap-4"><h1 className="text-3xl font-bold">Orders</h1><Button variant="outline" aria-label="Refresh orders" onClick={() => orders.refetch()}><RefreshCw /> Refresh</Button></div>
+      <div className="mb-8 flex flex-wrap items-center gap-3"><Button disabled={connecting} variant={printer ? "success" : "outline"} className="h-12" onClick={connect}><Printer />{connecting ? "Connecting…" : printer ? "Printer connected" : "Connect QZ Tray"}</Button>{printers.length > 0 && <select aria-label="Printer" className="h-12 max-w-full rounded-md border bg-card px-3" value={printer} onChange={(e) => setPrinter(e.target.value)}>{printers.map((p) => <option key={p}>{p}</option>)}</select>}</div>
+      <div className="mb-8 flex flex-wrap gap-2">{["all", ...PRINT_STATUSES].map((s) => <Button key={s} className="h-12" aria-pressed={filter === s} variant={filter === s ? "default" : "outline"} onClick={() => setFilter(s)}>{s === "all" ? "All" : STATUS_NAMES[s as keyof typeof STATUS_NAMES]}</Button>)}</div>
+      {orders.isPending && <p>Loading orders…</p>}{orders.error && <p role="alert" className="text-destructive">{orders.error.message}</p>}{!orders.isPending && !orders.error && !filtered.length && <p className="py-12 text-center text-muted-foreground">No orders here yet.</p>}
+      {[...groups].map(([customer, group]) => <section key={customer} className="mb-10"><h2 className="mb-4 flex items-center gap-2 break-all text-lg font-bold"><FolderOpen className="size-5 shrink-0 text-brand" />{customer}</h2><div className="space-y-3">{group.map((o) => <article key={o.id} className="rounded-lg border bg-card p-5"><div className="flex flex-wrap items-start justify-between gap-4"><div className="min-w-0"><h3 className="break-all font-bold">{o.file_name}</h3><p className="mt-1 text-sm text-muted-foreground">{o.paper_size} · {o.color_mode === "bw" ? "Black & white" : "Color"} · {o.quantity} {o.quantity === 1 ? "copy" : "copies"}</p><p className="mt-2 font-mono text-xs text-muted-foreground">{o.order_number}</p></div><select disabled={working === o.id} aria-label={`Status ${o.order_number}`} className="h-12 rounded-md border bg-background px-3 font-semibold" value={o.status} onChange={(e) => status(o.id, e.target.value)}>{PRINT_STATUSES.map((s) => <option value={s} key={s}>{STATUS_NAMES[s]}</option>)}</select></div><div className="mt-5 flex flex-wrap gap-3"><Button variant="outline" className="h-12" onClick={() => open(o.file_path)}><Download /> Open file</Button><Button variant="success" className="h-12" disabled={!printer || working === o.id} onClick={async () => { setWorking(o.id); try { await printCustomerFile(o, printer); toast.success("Document sent to printer"); } catch (err) { toast.error(err instanceof Error ? err.message : "Printing failed"); } finally { setWorking(null); } }}><Printer /> Print document</Button></div></article>)}</div></section>)}
+    </main></div>;
+}

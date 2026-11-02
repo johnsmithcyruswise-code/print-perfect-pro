@@ -53,22 +53,23 @@ import { cleanOldStorage } from "@/lib/admin.functions";
 import { printOrderTicket, printOrderDocuments } from "@/lib/qz-print";
 import { useCustomers, customerLabel } from "@/hooks/use-customers";
 import type { Database } from "@/integrations/supabase/types";
+import { BazzStaffPanel } from "@/components/bazz-staff-panel";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
-      { title: "Staff console — Planned Kid Computer Services" },
+      { title: "Staff orders — Bazz Computer Services" },
       {
         name: "description",
-        content: "Kanban production board, quoting and printer assignment for PK staff.",
+        content: "Customer documents and print options for Bazz staff.",
       },
-      { property: "og:title", content: "Staff console — Planned Kid Computer Services" },
-      { property: "og:description", content: "Production board and quoting for PK staff." },
+      { property: "og:title", content: "Staff orders — Bazz Computer Services" },
+      { property: "og:description", content: "Manage customer printing from new order to collection." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: AdminPage,
+  component: BazzStaffPanel,
 });
 
 type OrderStatus = Database["public"]["Enums"]["order_status"];
@@ -118,7 +119,7 @@ const TABS = [
 
 type TabId = (typeof TABS)[number]["id"];
 
-function AdminPage() {
+export function AdminPage() {
   const { isStaff, loading } = useRoles();
   const queryClient = useQueryClient();
   const navigate = useNavigate();

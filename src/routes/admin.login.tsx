@@ -2,24 +2,23 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Loader2, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
-import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
-import { syncMyProfile, cleanOldStorage } from "@/lib/admin.functions";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export const Route = createFileRoute("/admin/login")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Admin login — Planned Kid Computer Services" },
+      { title: "Staff login — Bazz Computer Services" },
       {
         name: "description",
-        content: "Staff and administrator sign in for the Planned Kid production console.",
+        content: "Staff sign in to manage Bazz print orders.",
       },
-      { property: "og:title", content: "Admin login — Planned Kid Computer Services" },
-      { property: "og:description", content: "Staff sign in for the production console." },
+      { property: "og:title", content: "Staff login — Bazz Computer Services" },
+      { property: "og:description", content: "Staff sign in to manage print orders." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -27,7 +26,6 @@ export const Route = createFileRoute("/admin/login")({
   component: AdminLogin,
 });
 
-const OWNER_EMAIL = "mzedi2012@gmail.com";
 
 function AdminLogin() {
   const navigate = useNavigate();
@@ -39,24 +37,7 @@ function AdminLogin() {
     e.preventDefault();
     setBusy(true);
     const creds = { email: email.trim().toLowerCase(), password };
-    let { error } = await supabase.auth.signInWithPassword(creds);
-
-    // First-run bootstrap for the owner account.
-    if (error && creds.email === OWNER_EMAIL) {
-      const { error: signUpError } = await supabase.auth.signUp(creds);
-      if (!signUpError) {
-        ({ error } = await supabase.auth.signInWithPassword(creds));
-      }
-    }
-
-    if (!error) {
-      // Ensure the owner profile exists and is granted the admin role.
-      await syncMyProfile({ data: {} }).catch(() => null);
-      // Auto-clean stale uploads and storage objects older than 7 days.
-      await cleanOldStorage({ data: undefined as never }).catch(() => null);
-
-    }
-
+    const { error } = await supabase.auth.signInWithPassword(creds);
 
     setBusy(false);
     if (error) {
@@ -83,11 +64,8 @@ function AdminLogin() {
     <main className="grid min-h-screen place-items-center px-4 py-16">
       <div className="glass-card w-full max-w-md rounded-3xl p-8">
         <div className="flex flex-col items-center text-center">
-          <BrandLogo className="h-12 w-auto" />
-          <h1 className="mt-6 text-2xl font-bold tracking-tight">Admin login</h1>
-          <p className="text-muted-foreground mt-1 text-sm">
-            Staff access to the production console.
-          </p>
+          <ThemeToggle />
+          <h1 className="mt-6 text-2xl font-bold">Bazz · Staff login</h1>
         </div>
 
         <form onSubmit={submit} className="mt-8 space-y-4">
@@ -113,17 +91,17 @@ function AdminLogin() {
               required
             />
           </div>
-          <Button type="submit" variant="hero" className="w-full" disabled={busy}>
+          <Button type="submit" variant="hero" className="h-14 w-full text-lg" disabled={busy}>
             {busy ? <Loader2 className="animate-spin" /> : <ShieldCheck />} Sign in
           </Button>
         </form>
 
         <div className="mt-4 flex items-center justify-between text-sm">
-          <button type="button" onClick={resetPassword} className="text-primary underline">
+          <Button type="button" variant="link" onClick={resetPassword}>
             Forgot password?
-          </button>
-          <Link to="/auth" className="text-muted-foreground underline">
-            Customer sign in
+          </Button>
+          <Link to="/" className="text-muted-foreground underline">
+            Home
           </Link>
         </div>
       </div>

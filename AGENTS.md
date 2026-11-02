@@ -10,4 +10,6 @@
 <!-- LOVABLE:END -->
 
 - Keep the visual theme centralized in `src/styles.css` and shared Button/Card variants so every workspace inherits visual updates without changing workflows.
-- Use the dashboard's validated `tab` search parameter for customer Main/Follow up navigation; keep existing tool URLs and staff navigation intact to preserve links and workflows.
+- Use the public /print route for guest submissions and the authenticated /admin route for the focused staff panel; retain legacy workspace modules without promoting them in the current flow.
+- Store guest orders in guest_print_orders with staff-only read/update policies, private storage and validated server-only submission; guest identity cookies never authorize reads.
+- Print actual private PDF/image bytes through QZ Tray with order options, never a receipt as the primary print action.

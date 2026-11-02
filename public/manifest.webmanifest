@@ -1,7 +1,7 @@
 {
-  "name": "Planned Kid Computer Services",
-  "short_name": "Planned Kid",
-  "description": "Print shop and document workspace \u2014 upload, print and track jobs.",
+  "name": "Bazz Computer Services",
+  "short_name": "Bazz",
+  "description": "Send your file. We print. You collect.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
