@@ -14,8 +14,6 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { WhatsAppFab } from "@/components/whatsapp-fab";
-import { InstallBanner } from "@/components/install-app";
 import { registerAppServiceWorker } from "@/lib/register-sw";
 
 function NotFoundComponent() {
@@ -83,15 +81,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Planned Kid Computer Services — Print Shop" },
+      { title: "Bazz Computer Services — Print Shop" },
       {
         name: "description",
-        content: "Upload, customise and track professional print jobs with Planned Kid Computer Services.",
+        content: "Simple document printing with Bazz Computer Services.",
       },
-      { property: "og:title", content: "Planned Kid Computer Services — Print Shop" },
+      { property: "og:title", content: "Bazz Computer Services — Print Shop" },
       {
         property: "og:description",
-        content: "Upload, customise and track professional print jobs with Planned Kid Computer Services.",
+        content: "Simple document printing with Bazz Computer Services.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -155,8 +153,6 @@ function RootComponent() {
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
       <Toaster position="top-center" richColors />
-      <WhatsAppFab />
-      <InstallBanner />
     </QueryClientProvider>
   );
 }
