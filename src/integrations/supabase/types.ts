@@ -211,6 +211,7 @@ export type Database = {
           file_name: string
           file_path: string
           id: string
+          message: string | null
           order_number: string
           paper_size: string
           quantity: number
@@ -225,6 +226,7 @@ export type Database = {
           file_name: string
           file_path: string
           id?: string
+          message?: string | null
           order_number?: string
           paper_size: string
           quantity: number
@@ -239,6 +241,7 @@ export type Database = {
           file_name?: string
           file_path?: string
           id?: string
+          message?: string | null
           order_number?: string
           paper_size?: string
           quantity?: number
