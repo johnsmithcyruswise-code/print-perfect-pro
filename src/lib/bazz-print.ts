@@ -11,6 +11,7 @@ export const printOptionsSchema = z.object({
   quantity: z.number().int().min(1).max(999),
 });
 export const guestPrintSchema = printOptionsSchema.extend({
+  message: z.string().trim().max(500).optional(),
   fileName: z.string().min(1).max(200).regex(/\.(pdf|jpe?g|png)$/i),
   contentType: z.enum(["application/pdf", "image/jpeg", "image/png"]),
   base64: z.string().min(1).max(Math.ceil(MAX_PRINT_BYTES / 3) * 4),

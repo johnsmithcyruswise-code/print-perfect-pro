@@ -16,7 +16,7 @@ export const sendGuestPrint = createServerFn({ method: "POST" })
     const path = `customers/${customerFolder(data.name, phone)}/${crypto.randomUUID()}/${data.fileName.replace(/[^\w.\-]/g, "_")}`;
     const upload = await supabaseAdmin.storage.from("print-files").upload(path, bytes, { contentType: data.contentType, upsert: false });
     if (upload.error) throw new Error("File could not be sent. Please try again.");
-    const { data: order, error } = await supabaseAdmin.from("guest_print_orders").insert({ customer_name: data.name, customer_phone: phone, file_name: data.fileName, file_path: path, content_type: data.contentType, paper_size: data.paperSize, color_mode: data.colorMode, quantity: data.quantity }).select("order_number").single();
+    const { data: order, error } = await supabaseAdmin.from("guest_print_orders").insert({ customer_name: data.name, customer_phone: phone, file_name: data.fileName, file_path: path, content_type: data.contentType, paper_size: data.paperSize, color_mode: data.colorMode, quantity: data.quantity, message: data.message || null }).select("order_number").single();
     if (error || !order) {
       await supabaseAdmin.storage.from("print-files").remove([path]);
       throw new Error("Order could not be saved. Please try again.");
