@@ -1,3 +1,4 @@
-- [ ] Build Bazz landing and cookie-based guest print flow, with no online prices.
-- [ ] Store guest documents privately in customer-named folders and add staff order panel.
-- [ ] Connect actual document printing to QZ Tray and verify guest submission/status changes.
+- [x] Build Bazz landing and cookie-based guest print flow, with no online prices.
+- [x] Store guest documents privately in customer-named folders and add staff order panel.
+- [x] Integrate actual document printing with QZ Tray; verify guest submission, private file access and status persistence.
+- [ ] Verify physical printout on the shop computer — requires local QZ Tray and an attached printer.
