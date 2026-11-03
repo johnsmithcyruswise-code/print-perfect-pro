@@ -1,0 +1,1 @@
+ALTER TABLE public.guest_print_orders ADD COLUMN IF NOT EXISTS message text CHECK (message IS NULL OR char_length(message) <= 500);
