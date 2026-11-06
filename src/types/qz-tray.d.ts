@@ -12,7 +12,7 @@ declare module "qz-tray" {
       find: () => Promise<string[]>;
     };
     configs: {
-      create: (printer?: string | null, options?: { copies: number; size: { width: number; height: number }; units: string; colorType: string }) => QZConfig;
+      create: (printer?: string | null, options?: { copies: number; size: { width: number; height: number }; units: string; colorType: string; scaleContent?: boolean }) => QZConfig;
     };
     print: (config: QZConfig, data: Array<{ type: string; format?: string; flavor?: string; data: string }>) => Promise<void>;
   };

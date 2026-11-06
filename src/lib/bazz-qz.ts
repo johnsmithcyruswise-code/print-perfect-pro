@@ -12,6 +12,6 @@ export async function printCustomerFile(order: { file_path: string; content_type
   const { data, error } = await supabase.storage.from("print-files").download(order.file_path);
   if (error || !data) throw new Error("Cannot load this file.");
   const base64 = await new Promise<string>((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(String(reader.result).split(",")[1] ?? ""); reader.onerror = reject; reader.readAsDataURL(data); });
-  const config = qz.configs.create(printer, { copies: order.quantity, size: order.paper_size === "A3" ? { width: 297, height: 420 } : { width: 210, height: 297 }, units: "mm", colorType: order.color_mode === "bw" ? "grayscale" : "color" });
+  const config = qz.configs.create(printer, { copies: order.quantity, size: order.paper_size === "A3" ? { width: 297, height: 420 } : { width: 210, height: 297 }, units: "mm", scaleContent: false, colorType: order.color_mode === "bw" ? "grayscale" : "color" });
   await qz.print(config, [{ type: "pixel", format: order.content_type === "application/pdf" ? "pdf" : "image", flavor: "base64", data: base64 }]);
 }

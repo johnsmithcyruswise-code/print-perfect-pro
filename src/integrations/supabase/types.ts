@@ -214,6 +214,8 @@ export type Database = {
           message: string | null
           order_number: string
           paper_size: string
+          photo_count: number | null
+          print_kind: string
           quantity: number
           status: string
         }
@@ -229,6 +231,8 @@ export type Database = {
           message?: string | null
           order_number?: string
           paper_size: string
+          photo_count?: number | null
+          print_kind?: string
           quantity: number
           status?: string
         }
@@ -244,6 +248,8 @@ export type Database = {
           message?: string | null
           order_number?: string
           paper_size?: string
+          photo_count?: number | null
+          print_kind?: string
           quantity?: number
           status?: string
         }

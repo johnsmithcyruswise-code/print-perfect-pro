@@ -1,8 +1,17 @@
 import { describe, expect, it } from "vitest";
 import { customerFolder, guestPrintSchema, PRINT_STATUSES, printOptionsSchema, validPrintSignature } from "./bazz-print";
+import { PASSPORT_PHOTO } from "./bazz-photo";
 const options = { name: "Print Check", phone: "0770000000", paperSize: "A4", colorMode: "bw", quantity: 1 };
 describe("Bazz print rules", () => {
   it("accepts name and phone without an account", () => { expect(printOptionsSchema.parse(options)).toEqual(options); });
+  it("uses the existing 35 by 45 mm passport size", () => { expect(PASSPORT_PHOTO.widthMm).toBe(35); expect(PASSPORT_PHOTO.heightMm).toBe(45); });
+  it("requires a prepared color PDF sheet for passport photos", () => {
+    const passport = { ...options, colorMode: "color", printKind: "passport", photoCount: 4, fileName: "passport.pdf", contentType: "application/pdf", base64: "AA==" };
+    expect(guestPrintSchema.safeParse(passport).success).toBe(true);
+    expect(guestPrintSchema.safeParse({ ...passport, colorMode: "bw" }).success).toBe(false);
+    expect(guestPrintSchema.safeParse({ ...passport, contentType: "image/jpeg", fileName: "photo.jpg" }).success).toBe(false);
+  });
+  it("accepts a customer message for staff", () => { expect(guestPrintSchema.parse({ ...options, fileName: "a.pdf", contentType: "application/pdf", base64: "AA==", message: "Print pages 1–3 only" }).message).toBe("Print pages 1–3 only"); });
   it("allows only A4 and A3", () => { expect(printOptionsSchema.safeParse({ ...options, paperSize: "A3" }).success).toBe(true); expect(printOptionsSchema.safeParse({ ...options, paperSize: "A5" }).success).toBe(false); });
   it("allows color or black and white", () => { expect(printOptionsSchema.safeParse({ ...options, colorMode: "color" }).success).toBe(true); expect(printOptionsSchema.safeParse({ ...options, colorMode: "other" }).success).toBe(false); });
   it("requires a positive whole number of copies", () => { expect(printOptionsSchema.safeParse({ ...options, quantity: 0 }).success).toBe(false); expect(printOptionsSchema.safeParse({ ...options, quantity: 1.5 }).success).toBe(false); });
