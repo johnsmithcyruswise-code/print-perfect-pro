@@ -72,7 +72,7 @@ function PrintPage() {
       const base64 = await new Promise<string>((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(String(reader.result).split(",")[1] ?? ""); reader.onerror = reject; reader.readAsDataURL(upload); });
       const result = await send({ data: { name, phone, paperSize: kind === "passport" ? "A4" : paperSize, colorMode: kind === "passport" ? "color" : colorMode, quantity: kind === "passport" ? 1 : quantity, printKind: kind, photoCount: kind === "passport" ? photoCount : undefined, message: message.trim() || undefined, fileName: upload.name, contentType: upload.type as "application/pdf" | "image/jpeg" | "image/png", base64 } });
       setNumber(result.orderNumber); setStep("done"); setMessage("");
-      const entry: RecentPrint = { number: result.orderNumber, file: upload.name, at: Date.now(), blob: upload, preview: thumbnail || undefined };
+      const entry: RecentPrint = { number: result.orderNumber, file: upload.name, at: Date.now(), blob: upload, ...(thumbnail ? { preview: thumbnail } : {}) };
       setRecent((entries) => [entry, ...entries].slice(0, 5));
       try { await saveRecent(entry); } catch { /* Sending succeeded even if phone storage is full. */ }
       try { localStorage.setItem("bazz-recent", JSON.stringify([entry, ...recent].slice(0, 5).map(({ number, file, at }) => ({ number, file, at })))); } catch { /* phone storage unavailable */ }
@@ -101,9 +101,9 @@ function PrintPage() {
         <div className="mb-8"><label htmlFor="message" className="mb-3 block text-lg font-bold">Message to staff <span className="text-sm font-normal text-muted-foreground">(optional)</span></label><textarea id="message" disabled={busy} maxLength={500} rows={3} value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Tell staff anything about your file" className="w-full rounded-md border bg-card p-3 text-base" /></div>
         <p className="mb-4 text-center text-sm text-muted-foreground">Price agreed at pickup.</p><Button disabled={busy || (kind === "document" ? !file : !portrait || !crop)} variant="success" className="h-16 w-full text-xl font-bold" onClick={submit}>{busy ? <Loader2 className="animate-spin" /> : <Printer />}{busy ? progress || "Sending…" : kind === "passport" ? "Send photos" : "Send to Print"}</Button>
       </>}
-      {step !== "details" && <BazzRecentFiles entries={recent} />}
       {error && <p role="alert" className="mt-5 text-destructive">{error}</p>}
       {step === "done" && <div className="py-14 text-center"><CheckCircle2 className="mx-auto mb-6 size-20 text-success" /><h1 className="text-4xl font-bold">Sent!</h1><p className="mt-6 text-muted-foreground">Your order number</p><p className="mt-2 break-all font-mono text-2xl font-bold">{number}</p><p className="mt-6 text-lg">Collect at Bazz Computer Services.</p><Button className="mt-10 h-16 w-full text-lg" onClick={() => { setFile(null); setPortrait(""); setCrop(null); setPreview(""); setStep("file"); }}>Print another file <Plus /></Button></div>}
+      {step !== "details" && <BazzRecentFiles entries={recent} />}
     </main>
   </div>;
 }
