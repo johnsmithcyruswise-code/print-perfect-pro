@@ -61,6 +61,7 @@
   --color-success-foreground: var(--success-foreground);
   --color-cover-foreground: var(--cover-foreground);
   --color-cover-overlay: var(--cover-overlay);
+  --color-photo-paper: var(--photo-paper);
   --shadow-glow: var(--clay-shadow);
   --shadow-lift: var(--clay-shadow);
   --shadow-clay: var(--clay-shadow);
@@ -68,6 +69,7 @@
 }
 
 :root {
+  --photo-paper: oklch(1 0 0);
   --cover-foreground: oklch(0.985 0.007 240);
   --cover-overlay: oklch(0.16 0.018 240 / 0.48);
   --radius: 1.25rem;
