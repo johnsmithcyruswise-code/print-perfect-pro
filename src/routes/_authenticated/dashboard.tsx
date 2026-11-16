@@ -124,7 +124,7 @@ function Dashboard() {
   const done = orders?.filter((o) => ["completed", "shipped"].includes(o.status)) ?? [];
 
   return (
-    <div className="min-h-screen">
+    <div className={tab === "main" ? "animated-main-background min-h-screen" : "min-h-screen bg-background"}>
       <SiteHeader />
       <main className="mx-auto max-w-6xl px-4 py-10">
         <LocationConsent />

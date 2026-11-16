@@ -8,7 +8,7 @@
  * Planned Kid Computer Services design system.
  *
  * Clay surfaces, clear blue, cocoa brown, and earthy green.
- * Solid fills only; shared tokens style every workspace.
+ * Shared tokens style every workspace; animated backgrounds are opt-in.
  */
 
 @theme inline {
@@ -72,6 +72,11 @@
   --photo-paper: oklch(1 0 0);
   --cover-foreground: oklch(0.985 0.007 240);
   --cover-overlay: oklch(0.16 0.018 240 / 0.48);
+  --ambient-blue: oklch(0.945 0.023 245);
+  --ambient-green: oklch(0.95 0.021 140);
+  --ambient-brown: oklch(0.95 0.019 55);
+  --gradient-main: linear-gradient(120deg, var(--ambient-blue), var(--ambient-green), var(--ambient-brown), var(--ambient-blue));
+  --gradient-landing: linear-gradient(120deg, oklch(0.22 0.04 245 / 0.76), oklch(0.23 0.035 140 / 0.72), oklch(0.22 0.03 55 / 0.76), oklch(0.22 0.04 245 / 0.76));
   --radius: 1.25rem;
   --background: oklch(0.96 0.012 240);
   --foreground: oklch(0.29 0.025 245);
@@ -116,6 +121,9 @@
 }
 
 .dark {
+  --ambient-blue: oklch(0.23 0.023 245);
+  --ambient-green: oklch(0.24 0.02 140);
+  --ambient-brown: oklch(0.23 0.02 55);
   --background: oklch(0.22 0.018 240);
   --foreground: oklch(0.975 0.005 258);
   --card: oklch(0.28 0.02 240);
@@ -307,4 +315,32 @@
 @keyframes splash-bar {
   from { width: 0%; }
   to { width: 100%; }
+}
+
+.animated-main-background,
+.animated-landing-background {
+  background-size: 200% 200%;
+  background-position: 0% 50%;
+  animation: ambient-background-shift 10s ease-in-out infinite;
+}
+
+.animated-main-background {
+  background-image: var(--gradient-main);
+}
+
+.animated-landing-background {
+  background-image: var(--gradient-landing);
+}
+
+@keyframes ambient-background-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animated-main-background,
+  .animated-landing-background {
+    animation: none;
+    background-position: 50% 50%;
+  }
 }

@@ -2,4 +2,5 @@
 - [x] Store guest documents privately in customer-named folders and add staff order panel.
 - [x] Integrate actual document printing with QZ Tray; verify guest submission, private file access and status persistence.
 - [ ] Verify physical printout on the shop computer — requires local QZ Tray and an attached printer.
+- [x] Check reported page errors and add subtle animated backgrounds only to landing and Main, preserving all workflows and PWA settings; browser checks found no runtime errors, all 11 print-validation tests passed, and build checks passed.
 - [x] Add phone photo/document previews and simple 35 × 45 mm passport photo preparation and submission; verified background removal, PDF submission, message persistence and local reopening.

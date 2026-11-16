@@ -26,7 +26,7 @@ function Landing() {
         <source src={heroVideoWebm.url} type="video/webm" />
         <source src={heroVideo.url} type="video/mp4" />
       </video>
-      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-cover-overlay" />
+      <div aria-hidden="true" className="animated-landing-background absolute inset-0 -z-10 bg-cover-overlay" />
       <header className="flex items-center justify-between gap-4 px-6 py-6 sm:px-10">
         <Link to="/" aria-label="Bazz home" className="flex items-center gap-3 font-bold"><Printer className="size-7" /> Bazz</Link>
         <ThemeToggle />

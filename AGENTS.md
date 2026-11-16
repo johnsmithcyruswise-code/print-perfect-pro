@@ -10,6 +10,7 @@
 <!-- LOVABLE:END -->
 
 - Keep the visual theme centralized in `src/styles.css` and shared Button/Card variants so every workspace inherits visual updates without changing workflows.
+- Apply animated background classes explicitly to the landing overlay and Main tab only; keep forms on opaque surfaces and respect reduced motion to avoid distracting task screens.
 - Use the public /print route for guest submissions and the authenticated /admin route for the focused staff panel; retain legacy workspace modules without promoting them in the current flow.
 - Store guest orders in guest_print_orders with staff-only read/update policies, private storage and validated server-only submission; guest identity cookies never authorize reads.
 - Print actual private PDF/image bytes through QZ Tray with order options, never a receipt as the primary print action.
