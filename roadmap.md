@@ -3,6 +3,7 @@
 - [x] Integrate actual document printing with QZ Tray; verify guest submission, private file access and status persistence.
 - [ ] Verify physical printout on the shop computer — requires local QZ Tray and an attached printer.
 - [ ] Change only the landing video source — waiting for the external video link.
+- [x] Add the requested static homepage sitemap and explicit Vercel XML header without introducing a SPA fallback.
 - [x] Copy the original Google verification HTML unchanged to the public root — verified the locally served bytes match the upload.
 - [ ] Deploy Google verification to Vercel and verify the public URL — requires Vercel deployment access or the connected repository's automatic deployment.
 - [x] Check reported page errors and add subtle animated backgrounds only to landing and Main, preserving all workflows and PWA settings; browser checks found no runtime errors, all 11 print-validation tests passed, and build checks passed.

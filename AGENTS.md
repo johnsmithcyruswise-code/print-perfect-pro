@@ -16,3 +16,4 @@
 - Print actual private PDF/image bytes through QZ Tray with order options, never a receipt as the primary print action.
 - Prepare guest passport portraits on-device with background segmentation and an adjustable crop; send measured PDF sheets and disable QZ scaling to preserve physical dimensions.
 - Keep recent submitted file bytes in device-local IndexedDB, never authorize private order reads with customer cookies or local file history.
+- Serve the sitemap as a public static XML asset with an explicit Vercel content-type header and no SPA fallback rewrite, so crawlers receive XML rather than page HTML.
