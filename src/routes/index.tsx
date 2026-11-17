@@ -2,8 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import heroVideo from "@/assets/pk-hero.mp4.asset.json";
-import heroVideoWebm from "@/assets/pk-hero.webm.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -23,8 +21,8 @@ function Landing() {
   return (
     <div className="relative isolate flex min-h-svh flex-col overflow-hidden bg-background text-cover-foreground">
       <video aria-hidden="true" className="absolute inset-0 -z-20 h-full w-full object-cover object-[65%_center]" poster="/hero-poster.jpg" autoPlay muted loop playsInline>
-        <source src={heroVideoWebm.url} type="video/webm" />
-        <source src={heroVideo.url} type="video/mp4" />
+        <source src="/pk-hero.webm" type="video/webm" />
+        <source src="/pk-hero.mp4" type="video/mp4" />
       </video>
       <div aria-hidden="true" className="animated-landing-background absolute inset-0 -z-10 bg-cover-overlay" />
       <header className="flex items-center justify-between gap-4 px-6 py-6 sm:px-10">
