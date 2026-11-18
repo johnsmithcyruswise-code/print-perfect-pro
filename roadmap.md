@@ -6,5 +6,7 @@
 - [x] Add the requested static homepage sitemap and explicit Vercel XML header without introducing a SPA fallback.
 - [x] Copy the original Google verification HTML unchanged to the public root — verified the locally served bytes match the upload.
 - [ ] Deploy Google verification to Vercel and verify the public URL — requires Vercel deployment access or the connected repository's automatic deployment.
+- [x] Add the FILE verification token required by the connected Google account while preserving the uploaded verification file.
+- [ ] Complete Google ownership verification and inspect homepage crawl/index records — waiting for Vercel to deploy googleb2d0e2d4633a2bcc.html; Google currently reports no verified properties for the connected account.
 - [x] Check reported page errors and add subtle animated backgrounds only to landing and Main, preserving all workflows and PWA settings; browser checks found no runtime errors, all 11 print-validation tests passed, and build checks passed.
 - [x] Add phone photo/document previews and simple 35 × 45 mm passport photo preparation and submission; verified background removal, PDF submission, message persistence and local reopening.
