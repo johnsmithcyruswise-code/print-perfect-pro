@@ -29,6 +29,13 @@
       "when": 1793969974578,
       "tag": "0003_guest_passport_photos",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1795510435240,
+      "tag": "0004_restrict_printers_read_to_staff",
+      "breakpoints": true
     }
   ]
 }
