@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { findNewIds, playNewJobChime } from "@/lib/bazz-chime";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -14,6 +15,8 @@ import { supabase } from "@/integrations/supabase/client";
 export function BazzStaffPanel() {
   const list = useServerFn(listGuestPrints); const queryClient = useQueryClient(); const navigate = useNavigate();
   const orders = useQuery({ queryKey: ["bazz-staff-orders"], queryFn: () => list(), refetchInterval: 10000 });
+  const knownIds = useRef<Set<string> | null>(null);
+  useEffect(() => { const ids = (orders.data ?? []).map((o) => o.id); if (!orders.data) return; if (knownIds.current === null) { knownIds.current = new Set(ids); return; } const fresh = findNewIds(knownIds.current, ids); ids.forEach((id) => knownIds.current!.add(id)); if (fresh.length) { playNewJobChime(); toast.success(fresh.length === 1 ? "New print job!" : `${fresh.length} new print jobs!`); } }, [orders.data]);
   const [filter, setFilter] = useState("all"); const [printers, setPrinters] = useState<string[]>([]); const [printer, setPrinter] = useState("");
   const [connecting, setConnecting] = useState(false); const [working, setWorking] = useState<string | null>(null);
   async function connect() { setConnecting(true); try { const found = await connectPrintStation(); setPrinters(found); setPrinter(found[0] ?? ""); toast.success(found.length ? "Printer connected" : "No printers found"); } catch { toast.error("Open QZ Tray on the shop computer, then connect again."); } finally { setConnecting(false); } }
