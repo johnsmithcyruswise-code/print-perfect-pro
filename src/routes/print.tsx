@@ -69,7 +69,8 @@ function PrintPage() {
       let upload = file; let thumbnail = "";
       if (kind === "passport" && portrait && crop) { const result = await passportSheet(portrait, crop, photoCount); upload = result.file; thumbnail = result.preview; }
       if (!upload) throw new Error("Choose a file first.");
-      const base64 = await new Promise<string>((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(String(reader.result).split(",")[1] ?? ""); reader.onerror = reject; reader.readAsDataURL(upload); });
+      const base64 = await new Promise<string>((resolve, reject) => { const reader = new FileReader(); reader.onload = () => { const result = typeof reader.result === "string" ? reader.result : ""; resolve(result.startsWith("data:") ? (result.split(",")[1] ?? "") : ""); }; reader.onerror = reject; reader.readAsDataURL(upload); });
+      if (!base64) throw new Error("Your file could not be read. Please choose it again.");
       const result = await send({ data: { name, phone, paperSize: kind === "passport" ? "A4" : paperSize, colorMode: kind === "passport" ? "color" : colorMode, quantity: kind === "passport" ? 1 : quantity, printKind: kind, photoCount: kind === "passport" ? photoCount : undefined, message: message.trim() || undefined, fileName: upload.name, contentType: upload.type as "application/pdf" | "image/jpeg" | "image/png", base64 } });
       setNumber(result.orderNumber); setStep("done"); setMessage("");
       const entry: RecentPrint = { number: result.orderNumber, file: upload.name, at: Date.now(), blob: upload, ...(thumbnail ? { preview: thumbnail } : {}) };

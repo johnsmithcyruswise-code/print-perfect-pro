@@ -16,7 +16,7 @@ export const guestPrintSchema = printOptionsSchema.extend({
   message: z.string().trim().max(500).optional(),
   fileName: z.string().min(1).max(200).regex(/\.(pdf|jpe?g|png)$/i),
   contentType: z.enum(["application/pdf", "image/jpeg", "image/png"]),
-  base64: z.string().min(1).max(Math.ceil(MAX_PRINT_BYTES / 3) * 4),
+  base64: z.string().min(1, "Your file could not be read. Please choose it again.").max(Math.ceil(MAX_PRINT_BYTES / 3) * 4),
 }).superRefine((data, ctx) => {
   if (data.printKind === "passport" && (data.contentType !== "application/pdf" || data.paperSize !== "A4" || data.colorMode !== "color" || data.quantity !== 1 || !data.photoCount)) {
     ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Passport photos must be prepared as a color A4 PDF sheet." });
